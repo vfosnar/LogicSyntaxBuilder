@@ -1,2 +1,5 @@
 reference:
 use debugmodules/module.json as test
+
+define:
+a[15]

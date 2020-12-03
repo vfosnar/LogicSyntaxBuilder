@@ -3,11 +3,17 @@ import os
 import shlex
 import json
 
+def generate_absolute_vector_positions(vector_size, string_syntax):
+    if(string_syntax == ""):
+        return [x for x in range(vector_size)]
+
 if __name__ == "__main__":
     #if(len(sys.argv) != 2):
     #    raise Exception("Invalid parameter count")
     vectors_outputs = {} # {"a":[["b", 0]]}
     vectors_gate_types = {}
+
+    reference_json_table = {}
 
     # btw idk why im keeping variable names in files.. probably gonna change export file and save everything in binary encoding instead of json
 
@@ -29,10 +35,10 @@ if __name__ == "__main__":
             elif(line == "define:"):
                 stage = 2
         elif(stage == 1):
+            line_split = shlex.split(line)
             if(line == "define:"):
                 stage = 2
-            line_split = shlex.split(line)
-            if(line_split[0] == "use"):
+            elif(line_split[0] == "use"):
                 if(len(line_split) != 4):
                     raise Exception("Expected 3 parameters for 'use' at line {}".format(file_line))
                 if(line_split[2] != "as"):
@@ -50,7 +56,7 @@ if __name__ == "__main__":
                     reference_json_data = json.loads(reference_data)
                 except:
                     raise Exception("Can't parse json file {} at line {}".format(line_split[1], file_line))
-
+                
                 ##### Frickin finally load reference #####
                 for vector_name in list(reference_json_data):
                     if(reference_json_data[vector_name][0] in [0, 2]):
@@ -91,8 +97,48 @@ if __name__ == "__main__":
             
             else:
                 raise Exception("Unexpected symbol at line {}".format(file_line))
-        
         elif(stage == 2):
-            pass
+            line_split = shlex.split(line)
+            if(line == "assign:"):
+                stage = 5
+            elif(len(line_split) == 2):
+                if(line_split[0] == "in"):
+                    pass
+                elif(line_split[0] == "out"):
+                    pass
+                else:
+                    raise Exception("Expected 'vec[size]', 'in vec[size]' or 'out vec[size]' at line {}".format(file_line))
+            elif(len(line_split) == 1):
+                name = line_split[0].split("[")[0]
+                size = line_split[0][len(name):]
+                if(size[0] != "["):
+                    raise Exception("Expected 'vec[size]', 'in vec[size]' or 'out vec[size]' at line {}".format(file_line))
+                if(size[-1] != "]"):
+                    raise Exception("Expected 'vec[size]', 'in vec[size]' or 'out vec[size]' at line {}".format(file_line))
+                vector_size = size[1:-1]
+                
+                vectors_outputs["base_{}".format(name)] = []
+                vectors_gate_types["base_{}".format(name)] = []
+
+                for x in range(int(vector_size)):
+                    vectors_outputs["base_{}".format(name)] += [[]]
+                    vectors_gate_types["base_{}".format(name)] += [0] # 0 means undefined
+                
+            else:
+                raise Exception("Expected 'vec[size]', 'in vec[size]' or 'out vec[size]' at line {}".format(file_line))
+
+        elif(stage == 5):
+            line_split = shlex.split(line)
+            if(line_split[1] == "<="):
+                # generate absolute vector positions
+                # ex. a[:5] -> [0, 1, 2, 3, 4]
+                name = line_split[0].split("[")[0]
+                formatting = line_split[0][len(name):]
+                pos = generate_absolute_vector_positions(len(vectors_outputs["base_{}".format(name)]), formatting)
+                print(pos)
+            else:
+                raise Exception("Unexpected symbol at line {}".format(file_line))
                 
         file_line += 1
+
+pass
