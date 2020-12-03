@@ -57,7 +57,7 @@ if __name__ == "__main__":
                 except:
                     raise Exception("Can't parse json file {} at line {}".format(line_split[1], file_line))
                 
-                ##### Frickin finally load reference #####
+                ##### Frickin finally load reference #####                                                                  ############### TODO CALL THIS EVERY TIME SOMETHING IS ASSIGNED TO IT, NOT ON LOAD (USE A JSON TABLE)
                 for vector_name in list(reference_json_data):
                     if(reference_json_data[vector_name][0] in [0, 2]):
                         # when vector is normal or output
@@ -79,7 +79,7 @@ if __name__ == "__main__":
                                 vectors_outputs["{}_{}".format(reference_prefix, vector_name)][-1] += [["{}_{}".format(reference_prefix, reference_vector_output[0]), reference_vector_output[1]]]
                     elif(reference_json_data[vector_name][0] == 1):
                         # when vector is input
-                        # inputs cant have defined gate types becouse gate type changes when referenced and assigned
+                        # inputs cant have defined gate types because gate type changes when referenced and assigned
 
                         # define local vector
                         vectors_outputs["{}_{}".format(reference_prefix, vector_name)] = []
