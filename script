@@ -3,3 +3,12 @@ use debugmodules/module.json as test
 
 define:
 a[15]
+b[10]
+
+assign:
+a[5:10:-1] <= b[0:5]
+
+test
+{
+    exp a[:5] <= test_output_vec
+}
