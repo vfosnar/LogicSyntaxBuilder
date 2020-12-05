@@ -1,14 +1,15 @@
 reference:
-use debugmodules/module.json as test
+use build/module.json as test
 
 define:
 a[15]
 b[10]
 
 assign:
-a[5:10:-1] <= b[0:5]
+a[5:10:-1] <= xor b[:5] a[0]
 
 test
 {
-    exp a[:5] <= test_output_vec
+    exp a[:2] <= _test_output_vec
+    to _test_input_vec[1] <= a[3]
 }
