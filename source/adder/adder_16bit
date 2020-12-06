@@ -1,0 +1,24 @@
+define:
+
+in a[16]
+in b[16]
+in c[1]
+
+out s[16]
+out co[1]
+
+xor0[16]
+and0[16]
+and1[16]
+carry[17]
+
+assign:
+carry[0] <= c
+co <= carry[16]
+
+xor0[:16] <= xor a[:16] b[:16]
+s[:16] <= xor xor0[:16] carry[:16]
+
+and0[:16] <= and xor0[:16] carry[:16]
+and1[:16] <= and b[:16] a[:16]
+carry[1:17] <= or and0[:16] and1[:16]

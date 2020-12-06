@@ -1,1 +1,1 @@
-python3 build.py source/16bit_dflipflop source/main & python3 translate.py build/main.json "$1"
+python3 build.py source/dflipflop/dflipflop_1bit source/dflipflop/dflipflop_8bit source/dflipflop/dflipflop_16bit source/dflipflop/dflipflop_32bit source/adder/adder_1bit source/adder/adder_8bit source/adder/adder_16bit source/adder/adder_32bit source/main; python3 translate.py build/main.json "$1"
