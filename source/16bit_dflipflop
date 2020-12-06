@@ -1,0 +1,44 @@
+define:
+in inp[16]
+inpneg[16]
+
+in clk[1]
+clkneg[1]
+
+out Q[16]
+out NQ[16]
+
+
+pass0[16]
+pass1[16]
+
+dff00[16]
+dff01[16]
+dff02[16]
+
+passQ[16]
+passNQ[16]
+
+dff10[16]
+dff11[16]
+dff12[16]
+
+assign:
+clkneg <= nor clk
+pass0[0:16] <= and clkneg inp[0:16]
+inpneg[0:16] <= nor inp[0:16]
+pass1[0:16] <= and clkneg inpneg[0:16]
+
+dff00[0:16] <= nor pass0[0:16] dff02[0:16]
+dff01[0:16] <= dff00[0:16]
+dff02[0:16] <= nor pass1[0:16] dff01[0:16]
+
+passQ[0:16] <= and clk dff00[0:16]
+passNQ[0:16] <= and clk dff02[0:16]
+
+dff10[0:16] <= nor passQ[0:16] dff12[0:16]
+dff11[0:16] <= dff10[0:16]
+dff12[0:16] <= nor passNQ[0:16] dff11[0:16]
+
+Q[0:16] <= dff10[0:16]
+NQ[0:16] <= dff12[0:16]

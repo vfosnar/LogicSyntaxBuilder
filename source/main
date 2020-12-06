@@ -1,0 +1,16 @@
+reference:
+use build/16bit_dflipflop.json as test
+
+define:
+in clk[1]
+in inp[2]
+out outp[2]
+
+assign:
+
+test
+{
+    to _clk <= clk
+    to _inp[:2] <= inp
+    exp outp <= _Q[:2]
+}

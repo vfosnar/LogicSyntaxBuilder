@@ -1,3 +1,0 @@
-define:
-out test_output_vec[2]
-in test_input_vec[4]
