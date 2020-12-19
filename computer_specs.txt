@@ -1,0 +1,84 @@
+REGISTERS:
+EAX  AX  AH AL
+EBX  BX  BH BL
+ECX  CX  CH CL
+EDX  DX  DH DL
+ESP - STACK POINTER
+
+CPU REGISTERS:
+EIP - INSTRUCTION POINTER (PROGRAM COUNTER)
+FR - FLAG REGISTER
+
+DATA TYPES:
+BYTE - 8 bits
+WORD - 16 bits
+LONG - 32 bits
+
+REGISTER OPERATIONS:
+INC <r>
+DEC <r>
+
+ADD <r> <r/m/imm>
+SUB <r> <r/m/imm>
+
+NOT <r>
+AND <r> <r/m/imm>
+OR <r> <r/m/imm>
+XOR <r> <r/m/imm>
+ROL <r> <r/m/imm>
+ROR <r> <r/m/imm>
+SHL <r> <r/m/imm>
+SHR <r> <r/m/imm>
+
+CMP <r> <r/m/imm>
+Jcc <r32>
+JMP <r32>
+
+MOV <r> <r/m/imm>
+
+POP <r>
+PUSH <r>
+
+FLAGS REGISTER OPERATIONS:
+CLC
+STC
+
+POPF
+PUSHF
+
+OTHER OPERATIONS:
+CALL <r/m/imm>
+MOV <m> <r/m/imm>
+POP <r/m/imm>
+PUSH <r/m/imm>
+HLT
+RET
+
+ex.
+MOV EAX [0xFFFF0004]      # MOV32_MEM_TO_EAX 0xFFFF0004
+ADD EAX 0x00000001        # ADD32_IMM_TO_EAX 0x00000001
+MOV [0xFFFF0000] EAX      # MOV32_EAX_TO_MEM 0xFFFF0000
+
+REGISTER MODULE:
+# READS BUS
+# _8 _16 _32
+SET
+ADD
+SUB
+AND
+OR
+XOR
+ROL
+ROR
+SHL
+SHR
+
+# WRITES BUS
+# _8 _16 _32
+OUT
+
+# DOES NOT USE BUS
+# _8 _16 _32
+INC
+DEC
+NOT

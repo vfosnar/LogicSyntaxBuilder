@@ -1,0 +1,123 @@
+reference:
+use build/dflipflop_32bit.json as dflipflop_32bit
+
+define:
+in clk[1]
+in in_BUS[32]
+out out_BUS[32]
+
+out_dff[32]
+
+; 0 SET
+; 1 ADD
+; 2 SUB
+; 3 AND
+; 4 OR
+; 5 XOR
+; 6 ROL
+; 7 ROR
+; 8 SHL
+; 9 SHR
+; A OUT
+; B INC
+; C DEC
+; D NOT
+in ctrl_8[14]
+in ctrl_88[14]
+in ctrl_16[14]
+in ctrl_32[14]
+in ctrl_clear[1]
+dont_clear[1]
+
+; collecton of signals
+in_dff[32]
+
+; signals with different range
+in_dff8[32]
+in_dff88[32]
+in_dff16[32]
+in_dff32[32]
+
+; define vectors
+; 8 bits
+SET_in_dff8[8]
+ADD_in_dff8[8]
+SUB_in_dff8[8]
+AND_in_dff8[8]
+OR_in_dff8[8]
+XOR_in_dff8[8]
+ROL_in_dff8[8]
+ROR_in_dff8[8]
+SHL_in_dff8[8]
+SHR_in_dff8[8]
+OUT_in_dff8[8]
+INC_in_dff8[8]
+DEC_in_dff8[8]
+NOT_in_dff8[8]
+; 8-16 bits
+
+; 16 bits
+
+; 32 bits
+
+KEEP_in_dff32[32]
+
+; define data vectors
+; 8 bits
+data_SET_in_dff8[8]
+data_ADD_in_dff8[8]
+data_SUB_in_dff8[8]
+data_AND_in_dff8[8]
+data_OR_in_dff8[8]
+data_XOR_in_dff8[8]
+data_ROL_in_dff8[8]
+data_ROR_in_dff8[8]
+data_SHL_in_dff8[8]
+data_SHR_in_dff8[8]
+data_OUT_in_dff8[8]
+data_INC_in_dff8[8]
+data_DEC_in_dff8[8]
+data_NOT_in_dff8[8]
+
+assign:
+; collect signals into one
+in_dff <= or in_dff8 in_dff88 in_dff16 in_dff32
+
+; ##########   define signals with different ranges   ##########
+in_dff8[0:8] <= or SET_in_dff8 ADD_in_dff8 SUB_in_dff8 AND_in_dff8 OR_in_dff8 XOR_in_dff8 ROL_in_dff8 ROR_in_dff8 SHL_in_dff8 SHR_in_dff8 OUT_in_dff8 INC_in_dff8 DEC_in_dff8 NOT_in_dff8
+; ...
+; dont forgot to keep signal
+in_dff32[0:32] <= KEEP_in_dff32
+
+
+; ##########   enable signals with control signal   ##########
+; 8 bits
+SET_in_dff8 <= and ctrl_8[0] data_SET_in_dff8
+
+; 8-16 bits (88)
+
+; 16 bits
+
+; 32 bits
+
+; ##########   dont forgot the keep signal   ##########
+dont_clear <= nor ctrl_clear ctrl_8 ctrl_88 ctrl_16 ctrl_32
+KEEP_in_dff32 <= and dont_clear out_dff
+
+; ##########   assign data   ##########
+; 8 bits
+data_SET_in_dff8 <= in_BUS[0:8]
+
+; 8-16 bits (88)
+
+; 16 bits
+
+; 32 bits
+
+
+dflipflop_32bit
+{
+    to _clk <= clk
+    to _inp <= in_dff
+    exp out_BUS <= _Q; TESTING PURPOSES out_BUS (out_dff)
+}

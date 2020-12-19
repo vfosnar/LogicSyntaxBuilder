@@ -380,5 +380,5 @@ if __name__ == "__main__":
                 output_vector_list[vector_name] += [vectors_gate_types[vector_name]]
         if(not os.path.exists("build")):
             os.mkdir("build")
-        open("build/{}.json".format(os.path.basename(filename)), 'wb').write(json.dumps(output_vector_list).encode())
+        open("build/{}.json".format(os.path.basename(os.path.splitext(filename)[0])), 'wb').write(json.dumps(output_vector_list).encode())
     print("Exported successfully")
