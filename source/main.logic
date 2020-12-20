@@ -3,9 +3,9 @@ use build/register.json as register
 
 define:
 in clk[1]
-in set[1]
+in ctrl[14]
 in in_data[8]
-out out_data[8]
+out out_data[16]
 bus[32]
 
 assign:
@@ -15,6 +15,6 @@ register
 {
     to _clk <= clk
     to _in_BUS <= bus
-    to _ctrl_8[0] <= set
-    exp out_data <= _out_BUS[:8]
+    to _ctrl_88 <= ctrl
+    exp out_data <= _out_dff[:16]
 }

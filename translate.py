@@ -21,9 +21,9 @@ if __name__ == "__main__":
         current_offset += len(file[vector_name][1])
     
     current_id = 0
-    offset_z = {1:0, 2:0}
-    
+    offset_y = 0
     for vector_name in list(file):
+        offset_z = 0
         for i, gate_outputs in enumerate(file[vector_name][1]):
             gate_type = 0
             if(file[vector_name][0] != 1):
@@ -42,17 +42,40 @@ if __name__ == "__main__":
                 },
                 "pos": {
                     "x": 0,
-                    "y": file[vector_name][0],
-                    "z": 0 if file[vector_name][0] == 0 else offset_z[file[vector_name][0]]
+                    "y": offset_y,
+                    "z": 0 if file[vector_name][0] == 0 else offset_z
                 },
                 "shapeId": "9f0f56e8-2c31-4d83-996c-d00a9b296c3f",
                 "xaxis": 2,
                 "zaxis": 3
                 }]
             current_id += 1
+            if(file[vector_name][0] == 1):
+                childs += [{
+                    "color": "df7f01",
+                    "controller": {
+                        "active": False,
+                        "controllers": [
+                            {
+                                "id": current_id-1
+                            }
+                        ],
+                        "id": current_id+65536,
+                        "joints": None
+                    },
+                    "pos": {
+                        "x": -1,
+                        "y": offset_y,
+                        "z": offset_z+1
+                    },
+                    "shapeId": "7cf717d7-d167-4f2d-a6e7-6b2c70aa3986",
+                    "xaxis": -3,
+                    "zaxis": 2
+                }]
             if(file[vector_name][0] != 0):
-                offset_z[file[vector_name][0]] += 1
-
+                offset_z += 1
+        if(file[vector_name][0] != 0):
+            offset_y += 1
 
     # Export
     if(not os.path.exists(path)):

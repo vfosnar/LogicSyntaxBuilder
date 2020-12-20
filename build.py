@@ -71,6 +71,9 @@ def generate_absolute_vector_positions(vector_size, string_syntax):
                 raise Exception("Expected vec[range_start:range_end:range_step] at line {} in file {}".format(file_line + 1, filename))
         return [x for x in range(range_start, range_end)][::range_step]
 
+def bitfield(n):
+    return [1 if digit=='1' else 0 for digit in bin(n)[2:]]
+
 operands_table = [
     "and",
     "or",
@@ -103,6 +106,8 @@ if __name__ == "__main__":
             for _ in range(int(vector_size)):
                 vectors_outputs["_{}".format(name)] += [[]]
                 vectors_gate_types["_{}".format(name)] += [-1] # -1 means undefined
+
+        assign("_const_0_1", "[1]", 0)
 
         global_reference_prefix = 0
         reference_json_table = {}
@@ -210,21 +215,45 @@ if __name__ == "__main__":
                     
                     if(vectors_nio_type["_{}".format(name_left)] == 1):
                         raise Exception("Can't assign to a input vector at line {} in file {}".format(file_line + 1, filename))
-
+                    
                     # check gate types
                     for index_left in positions_left:
-                        if(vectors_gate_types["_{}".format(name_left)][index_left] != -1):
-                            raise Exception("Vector range is already assigned at line {} in file {}".format(file_line + 1, filename))
+                        try:
+                            if(vectors_gate_types["_{}".format(name_left)][index_left] != -1):
+                                raise Exception("Vector range is already assigned at line {} in file {}".format(file_line + 1, filename))
+                        except IndexError:
+                            raise Exception("Index is out of range in vector at line {} in file {}".format(file_line + 1, filename))
                     
                     # foreach vector on right side
                     for name_right, formatting_right in zip(names_right, formattings_right):
+                        ##### check if vector isnt actually a constant, if it is then add this constant to vectors #####
+                        if(formatting_right == ""):
+                            try:
+                                value = int(name_right)
+                                if(not "__const_{}_{}".format(name_right, len(positions_left)) in vectors_outputs): # contstant isnt already defined
+                                    vectors_outputs["__const_{}_{}".format(name_right, len(positions_left))] = []
+                                    vectors_gate_types["__const_{}_{}".format(name_right, len(positions_left))] = []
+                                    vectors_nio_type["__const_{}_{}".format(name_right, len(positions_left))] = 0
+                                    bf = bitfield(value)[::-1]                                  # generate list of bits from constant
+                                    for _ in range(len(positions_left) - len(bf)): bf.append(0) # add items to list if its too small
+                                    bf = bf[:len(positions_left)]                               # remove items if its too long
+                                    for i in range(len(positions_left)):
+                                        vectors_outputs["__const_{}_{}".format(name_right, len(positions_left))] += [[]]
+                                        vectors_gate_types["__const_{}_{}".format(name_right, len(positions_left))] += [bf[i]*4] # if its 0 => 0 if its 1 => 4; nand
+                                        vectors_outputs["__const_0_1"][0] += [["__const_{}_{}".format(name_right, len(positions_left)), i]]
+                                name_right = "_const_{}_{}".format(name_right, len(positions_left))
+                            except ValueError:
+                                pass
                         # generate absolute positions for vector
                         positions_right = generate_absolute_vector_positions(len(vectors_outputs["_{}".format(name_right)]), formatting_right)
+                        # calculate how many times iterate over vector
+                        iterate = max(len(positions_left), len(positions_right))
                         if(len(positions_left) != len(positions_right)):
                             print("Warning: Vectors aren't same size at line {} in file {}".format(file_line + 1, filename))
 
                         # for connection in left vector and right vector
-                        for i, index_left in enumerate(positions_left):
+                        for i in range(iterate):
+                            index_left = positions_left[i % len(positions_left)]
                             # Get gate in right vector
                             index_right = positions_right[i % len(positions_right)]
                             
@@ -353,13 +382,34 @@ if __name__ == "__main__":
                     
                     # foreach vector on right side
                     for name_right, formatting_right in zip(names_right, formattings_right):
+                        ##### check if vector isnt actually a constant, if it is then add this constant to vectors #####
+                        if(formatting_right == ""):
+                            try:
+                                value = int(name_right)
+                                if(not "__const_{}_{}".format(name_right, len(positions_left)) in vectors_outputs): # contstant isnt already defined
+                                    vectors_outputs["__const_{}_{}".format(name_right, len(positions_left))] = []
+                                    vectors_gate_types["__const_{}_{}".format(name_right, len(positions_left))] = []
+                                    vectors_nio_type["__const_{}_{}".format(name_right, len(positions_left))] = 0
+                                    bf = bitfield(value)[::-1]                                  # generate list of bits from constant
+                                    for _ in range(len(positions_left) - len(bf)): bf.append(0) # add items to list if its too small
+                                    bf = bf[:len(positions_left)]                               # remove items if its too long
+                                    for i in range(len(positions_left)):
+                                        vectors_outputs["__const_{}_{}".format(name_right, len(positions_left))] += [[]]
+                                        vectors_gate_types["__const_{}_{}".format(name_right, len(positions_left))] += [bf[i]*4] # if its 0 => 0 if its 1 => 4; nand
+                                        vectors_outputs["__const_0_1"][0] += [["__const_{}_{}".format(name_right, len(positions_left)), i]]
+                                name_right = "_const_{}_{}".format(name_right, len(positions_left))
+                            except ValueError:
+                                pass
                         # generate absolute positions for vector
                         positions_right = generate_absolute_vector_positions(len(vectors_outputs["{}_{}".format(name_right_prefix, name_right)]), formatting_right)
+                        # calculate how many times iterate over vector
+                        iterate = max(len(positions_left), len(positions_right))
                         if(len(positions_left) != len(positions_right)):
                             print("Warning: Vectors aren't same size at line {} in file {}".format(file_line + 1, filename))
 
                         # for connection in left vector and right vector
-                        for i, index_left in enumerate(positions_left):
+                        for i in range(iterate):
+                            index_left = positions_left[i % len(positions_left)]
                             # Get gate in right vector
                             index_right = positions_right[i % len(positions_right)]
                             # set output gates types
