@@ -1,6 +1,8 @@
 reference:
 use build/dflipflop_32bit.json as dflipflop_32bit
 use build/adder_8bit.json as adder_8bit
+use build/adder_16bit.json as adder_16bit
+use build/adder_32bit.json as adder_32bit
 
 
 define:
@@ -19,7 +21,7 @@ out_bus_88[32]
 out_bus_16[32]
 out_bus_32[32]
 
-out out_dff[32]; only debug; should be normal
+out_dff[32]
 
 ; 0 SET
 ; 1 ADD
@@ -32,7 +34,7 @@ out out_dff[32]; only debug; should be normal
 ; 8 SHL
 ; 9 SHR
 ; A OUT
-; B INC - does not set carry
+; B INC
 ; C DEC
 ; D NOT
 in ctrl_8[14]
@@ -87,8 +89,35 @@ INC_in_dff88[8]
 DEC_in_dff88[8]
 NOT_in_dff88[8]
 ; 16 bits
-
+SET_in_dff16[16]
+ADD_in_dff16[16]
+SUB_in_dff16[16]
+AND_in_dff16[16]
+OR_in_dff16[16]
+XOR_in_dff16[16]
+ROL_in_dff16[16]
+ROR_in_dff16[16]
+SHL_in_dff16[16]
+SHR_in_dff16[16]
+OUT_in_dff16[16]
+INC_in_dff16[16]
+DEC_in_dff16[16]
+NOT_in_dff16[16]
 ; 32 bits
+SET_in_dff32[32]
+ADD_in_dff32[32]
+SUB_in_dff32[32]
+AND_in_dff32[32]
+OR_in_dff32[32]
+XOR_in_dff32[32]
+ROL_in_dff32[32]
+ROR_in_dff32[32]
+SHL_in_dff32[32]
+SHR_in_dff32[32]
+OUT_in_dff32[32]
+INC_in_dff32[32]
+DEC_in_dff32[32]
+NOT_in_dff32[32]
 
 KEEP_in_dff32[32]
 
@@ -124,18 +153,45 @@ data_INC_in_dff88[8]
 data_DEC_in_dff88[8]
 data_NOT_in_dff88[8]
 ; 16 bits
-
+data_SET_in_dff16[16]
+data_ADD_in_dff16[16]
+data_SUB_in_dff16[16]
+data_AND_in_dff16[16]
+data_OR_in_dff16[16]
+data_XOR_in_dff16[16]
+data_ROL_in_dff16[16]
+data_ROR_in_dff16[16]
+data_SHL_in_dff16[16]
+data_SHR_in_dff16[16]
+data_OUT_in_dff16[16]
+data_INC_in_dff16[16]
+data_DEC_in_dff16[16]
+data_NOT_in_dff16[16]
 ; 32 bits
+data_SET_in_dff32[32]
+data_ADD_in_dff32[32]
+data_SUB_in_dff32[32]
+data_AND_in_dff32[32]
+data_OR_in_dff32[32]
+data_XOR_in_dff32[32]
+data_ROL_in_dff32[32]
+data_ROR_in_dff32[32]
+data_SHL_in_dff32[32]
+data_SHR_in_dff32[32]
+data_OUT_in_dff32[32]
+data_INC_in_dff32[32]
+data_DEC_in_dff32[32]
+data_NOT_in_dff32[32]
 
 ; define vectors needed by smaller operations
 ; 8 bits
 proc_data_SUB_in_dff8[8]
-proc_data_SUB_in_dff88[8]
 ; 8-16 bits
-
+proc_data_SUB_in_dff88[8]
 ; 16 bits
-
+proc_data_SUB_in_dff16[16]
 ; 32 bits
+proc_data_SUB_in_dff32[32]
 
 assign:
 ; collect signals into one
@@ -159,9 +215,8 @@ is_in_BUS[32] <= and is_in_BUS_32_vec
 ; ##########   define signals with different ranges   ##########
 in_dff8[0:8] <= or SET_in_dff8 ADD_in_dff8 SUB_in_dff8 AND_in_dff8 OR_in_dff8 XOR_in_dff8 ROL_in_dff8 ROR_in_dff8 SHL_in_dff8 SHR_in_dff8 OUT_in_dff8 INC_in_dff8 DEC_in_dff8 NOT_in_dff8
 in_dff88[8:16] <= or SET_in_dff88 ADD_in_dff88 SUB_in_dff88 AND_in_dff88 OR_in_dff88 XOR_in_dff88 ROL_in_dff88 ROR_in_dff88 SHL_in_dff88 SHR_in_dff88 OUT_in_dff88 INC_in_dff88 DEC_in_dff88 NOT_in_dff88
-; ...
-; dont forgot to keep signal
-in_dff32[0:32] <= KEEP_in_dff32
+in_dff16[0:16] <= or SET_in_dff16 ADD_in_dff16 SUB_in_dff16 AND_in_dff16 OR_in_dff16 XOR_in_dff16 ROL_in_dff16 ROR_in_dff16 SHL_in_dff16 SHR_in_dff16 OUT_in_dff16 INC_in_dff16 DEC_in_dff16 NOT_in_dff16
+in_dff32[0:32] <= or SET_in_dff32 ADD_in_dff32 SUB_in_dff32 AND_in_dff32 OR_in_dff32 XOR_in_dff32 ROL_in_dff32 ROR_in_dff32 SHL_in_dff32 SHR_in_dff32 OUT_in_dff32 INC_in_dff32 DEC_in_dff32 NOT_in_dff32 KEEP_in_dff32
 
 ; boolean vector if any of control signals are active
 act_ctrl_8 <= or ctrl_8
@@ -209,8 +264,35 @@ INC_in_dff88 <= and ctrl_88[11] data_INC_in_dff88
 DEC_in_dff88 <= and ctrl_88[12] data_DEC_in_dff88
 NOT_in_dff88 <= and ctrl_88[13] data_NOT_in_dff88
 ; 16 bits
-
+SET_in_dff16 <= and ctrl_16[0] data_SET_in_dff16
+ADD_in_dff16 <= and ctrl_16[1] data_ADD_in_dff16
+SUB_in_dff16 <= and ctrl_16[2] data_SUB_in_dff16
+AND_in_dff16 <= and ctrl_16[3] data_AND_in_dff16
+OR_in_dff16 <= and ctrl_16[4] data_OR_in_dff16
+XOR_in_dff16 <= and ctrl_16[5] data_XOR_in_dff16
+ROL_in_dff16 <= and ctrl_16[6] data_ROL_in_dff16
+ROR_in_dff16 <= and ctrl_16[7] data_ROR_in_dff16
+SHL_in_dff16 <= and ctrl_16[8] data_SHL_in_dff16
+SHR_in_dff16 <= and ctrl_16[9] data_SHR_in_dff16
+OUT_in_dff16 <= and ctrl_16[10] data_OUT_in_dff16
+INC_in_dff16 <= and ctrl_16[11] data_INC_in_dff16
+DEC_in_dff16 <= and ctrl_16[12] data_DEC_in_dff16
+NOT_in_dff16 <= and ctrl_16[13] data_NOT_in_dff16
 ; 32 bits
+SET_in_dff32 <= and ctrl_32[0] data_SET_in_dff32
+ADD_in_dff32 <= and ctrl_32[1] data_ADD_in_dff32
+SUB_in_dff32 <= and ctrl_32[2] data_SUB_in_dff32
+AND_in_dff32 <= and ctrl_32[3] data_AND_in_dff32
+OR_in_dff32 <= and ctrl_32[4] data_OR_in_dff32
+XOR_in_dff32 <= and ctrl_32[5] data_XOR_in_dff32
+ROL_in_dff32 <= and ctrl_32[6] data_ROL_in_dff32
+ROR_in_dff32 <= and ctrl_32[7] data_ROR_in_dff32
+SHL_in_dff32 <= and ctrl_32[8] data_SHL_in_dff32
+SHR_in_dff32 <= and ctrl_32[9] data_SHR_in_dff32
+OUT_in_dff32 <= and ctrl_32[10] data_OUT_in_dff32
+INC_in_dff32 <= and ctrl_32[11] data_INC_in_dff32
+DEC_in_dff32 <= and ctrl_32[12] data_DEC_in_dff32
+NOT_in_dff32 <= and ctrl_32[13] data_NOT_in_dff32
 
 ; ##########   dont forgot the keep signal   ##########
 dont_clear <= nor ctrl_clear ctrl_8 ctrl_88 ctrl_16 ctrl_32
@@ -236,7 +318,7 @@ adder_8bit
 }
 adder_8bit
 {
-    to _a <= proc_data_SUB_in_dff8[0:8]
+    to _a <= proc_data_SUB_in_dff8
     to _b <= out_dff[0:8]
     exp data_SUB_in_dff8 <= _s
 }
@@ -277,7 +359,7 @@ adder_8bit
 ; NOT
 data_NOT_in_dff8 <= nor out_dff[0:8]
 ; #####   8-16 bits (88)   #####
-data_SET_in_dff88 <= in_BUS[8:16]
+data_SET_in_dff88 <= in_BUS[0:8]
 ; ADD
 adder_8bit
 {
@@ -294,7 +376,7 @@ adder_8bit
 }
 adder_8bit
 {
-    to _a <= proc_data_SUB_in_dff88[0:8]
+    to _a <= proc_data_SUB_in_dff88
     to _b <= out_dff[8:16]
     exp data_SUB_in_dff88 <= _s
 }
@@ -335,9 +417,125 @@ adder_8bit
 ; NOT
 data_NOT_in_dff88 <= nor out_dff[8:16]
 ; #####   16 bits   #####
+; SET
+data_SET_in_dff16 <= in_BUS[0:16]
+; ADD
+adder_16bit
+{
+    to _a <= out_dff[0:16]
+    to _b <= in_BUS[0:16]
+    exp data_ADD_in_dff16 <= _s
+}
+; SUB
+adder_16bit
+{
+    to _a <= nor in_BUS[0:16]
+    to _b <= 1
+    exp proc_data_SUB_in_dff16 <= _s
+}
+adder_16bit
+{
+    to _a <= proc_data_SUB_in_dff16
+    to _b <= out_dff[0:16]
+    exp data_SUB_in_dff16 <= _s
+}
+; AND
+data_AND_in_dff16 <= and out_dff[0:16] in_BUS[0:16]
+; OR
+data_OR_in_dff16 <= or out_dff[0:16] in_BUS[0:16]
+; XOR
+data_XOR_in_dff16 <= xor out_dff[0:16] in_BUS[0:16]
+; ROL
+data_ROL_in_dff16[0] <= and out_dff[15] is_in_BUS[1]
+data_ROL_in_dff16[1:16] <= and out_dff[0:15] is_in_BUS[1]
+; ROR
+data_ROR_in_dff16[0:15] <= and out_dff[1:16] is_in_BUS[1]
+data_ROR_in_dff16[15] <= and out_dff[0] is_in_BUS[1]
+; SHL
+data_SHL_in_dff16[1:16] <= and out_dff[0:15] is_in_BUS[1]
+; SHR
+data_SHR_in_dff16[0:15] <= and out_dff[1:16] is_in_BUS[1]
+; OUT
+data_OUT_in_dff16 <= out_dff[0:16]
+out_bus_16[0:16] <= and ctrl_16[10] out_dff[0:16]
 
+; INC
+adder_16bit
+{
+    to _a <= out_dff[0:16]
+    to _b <= 1
+    exp data_INC_in_dff16 <= _s
+}
+; DEC
+adder_16bit
+{
+    to _a <= out_dff[0:16]
+    to _b <= 255
+    exp data_DEC_in_dff16 <= _s
+}
+; NOT
+data_NOT_in_dff16 <= nor out_dff[0:16]
 ; #####   32 bits   #####
+; SET
+data_SET_in_dff32 <= in_BUS[0:32]
+; ADD
+adder_32bit
+{
+    to _a <= out_dff[0:32]
+    to _b <= in_BUS[0:32]
+    exp data_ADD_in_dff32 <= _s
+}
+; SUB
+adder_32bit
+{
+    to _a <= nor in_BUS[0:32]
+    to _b <= 1
+    exp proc_data_SUB_in_dff32 <= _s
+}
+adder_32bit
+{
+    to _a <= proc_data_SUB_in_dff32
+    to _b <= out_dff[0:32]
+    exp data_SUB_in_dff32 <= _s
+}
+; AND
+data_AND_in_dff32 <= and out_dff[0:32] in_BUS[0:32]
+; OR
+data_OR_in_dff32 <= or out_dff[0:32] in_BUS[0:32]
+; XOR
+data_XOR_in_dff32 <= xor out_dff[0:32] in_BUS[0:32]
+; ROL
+data_ROL_in_dff32[0] <= and out_dff[31] is_in_BUS[1]
+data_ROL_in_dff32[1:32] <= and out_dff[0:31] is_in_BUS[1]
+; ROR
+data_ROR_in_dff32[0:31] <= and out_dff[1:32] is_in_BUS[1]
+data_ROR_in_dff32[31] <= and out_dff[0] is_in_BUS[1]
+; SHL
+data_SHL_in_dff32[1:32] <= and out_dff[0:31] is_in_BUS[1]
+; SHR
+data_SHR_in_dff32[0:31] <= and out_dff[1:32] is_in_BUS[1]
+; OUT
+data_OUT_in_dff32 <= out_dff[0:32]
+out_bus_32[0:32] <= and ctrl_32[10] out_dff[0:32]
 
+; INC
+adder_32bit
+{
+    to _a <= out_dff[0:32]
+    to _b <= 1
+    exp data_INC_in_dff32 <= _s
+}
+; DEC
+adder_32bit
+{
+    to _a <= out_dff[0:32]
+    to _b <= 255
+    exp data_DEC_in_dff32 <= _s
+}
+; NOT
+data_NOT_in_dff32 <= nor out_dff[0:32]
+
+; ##########   END   ##########
 
 dflipflop_32bit
 {

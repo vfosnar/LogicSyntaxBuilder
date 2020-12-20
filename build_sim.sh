@@ -1,0 +1,1 @@
+bash build.sh && python3 simulator.py build/main.json test_inputs.json

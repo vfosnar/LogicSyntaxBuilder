@@ -1,20 +1,229 @@
 reference:
 use build/register.json as register
+; |---------- E?X - 32 -----------|
+; |               |    ?X - 16    |
+; |               | ?H 88 | ?L  8 |
+; |-------------------------------|
+; 2^32            2^16    2^8     0
 
 define:
 in clk[1]
-in ctrl[14]
-in in_data[8]
-out out_data[16]
-bus[32]
+in rst[1]
+not_rst[1]
+out bus[32]
+bus_in[32]
+bus_eax[32]
+bus_ebx[32]
+bus_ecx[32]
+bus_edx[32]
+bus_esp[32]
+bus_eip[32]
+
+ctrl_eax[14]
+ctrl_ebx[14]
+ctrl_ecx[14]
+ctrl_edx[14]
+ctrl_esp[14]
+ctrl_eip[14]
+
+ctrl_ax[14]
+ctrl_bx[14]
+ctrl_cx[14]
+ctrl_dx[14]
+
+ctrl_ah[14]
+ctrl_bh[14]
+ctrl_ch[14]
+ctrl_dh[14]
+
+ctrl_al[14]
+ctrl_bl[14]
+ctrl_cl[14]
+ctrl_dl[14]
+
+; 8 bit step counter
+ctrl_sc[14]
+step[8]
+step_out[8]
+steps_0[8]
+steps_1[8]
+steps_2[8]
+steps_3[8]
+steps_4[8]
+steps_5[8]
+steps_6[8]
+steps_7[8]
+steps_8[8]
+steps_9[8]
+steps_A[8]
+steps_B[8]
+steps_C[8]
+steps_D[8]
+steps_E[8]
+steps_F[8]
+steps_10[8]
+steps_11[8]
+steps_12[8]
+steps_13[8]
+steps_14[8]
+steps_15[8]
+steps_16[8]
+steps_17[8]
+steps_18[8]
+steps_19[8]
+steps_1A[8]
+steps_1B[8]
+steps_1C[8]
+steps_1D[8]
+steps_1E[8]
+steps_1F[8]
+
+steps[32]
 
 assign:
-bus[:8] <= in_data
+not_rst <= nor rst
+bus <= and bus_in not_rst
+bus_in <= or bus_eax bus_ebx bus_ecx bus_edx bus_eip bus_esp
 
+; EAX
 register
 {
     to _clk <= clk
     to _in_BUS <= bus
-    to _ctrl_88 <= ctrl
-    exp out_data <= _out_dff[:16]
+    to _ctrl_32 <= ctrl_eax
+    to _ctrl_16 <= ctrl_ax
+    to _ctrl_88 <= ctrl_ah
+    to _ctrl_8 <= ctrl_al
+    exp bus_eax <= _out_BUS
 }
+
+; EBX
+register
+{
+    to _clk <= clk
+    to _in_BUS <= bus
+    to _ctrl_32 <= ctrl_ebx
+    to _ctrl_16 <= ctrl_bx
+    to _ctrl_88 <= ctrl_bh
+    to _ctrl_8 <= ctrl_bl
+    exp bus_ebx <= _out_BUS
+}
+
+; ECX
+register
+{
+    to _clk <= clk
+    to _in_BUS <= bus
+    to _ctrl_32 <= ctrl_ecx
+    to _ctrl_16 <= ctrl_cx
+    to _ctrl_88 <= ctrl_ch
+    to _ctrl_8 <= ctrl_cl
+    exp bus_ecx <= _out_BUS
+}
+
+; EDX
+register
+{
+    to _clk <= clk
+    to _in_BUS <= bus
+    to _ctrl_32 <= ctrl_edx
+    to _ctrl_16 <= ctrl_dx
+    to _ctrl_88 <= ctrl_dh
+    to _ctrl_8 <= ctrl_dl
+    exp bus_edx <= _out_BUS
+}
+
+; ESP
+register
+{
+    to _clk <= clk
+    to _in_BUS <= bus
+    to _ctrl_32 <= ctrl_esp
+    exp bus_esp <= _out_BUS
+}
+
+; EIP
+register
+{
+    to _clk <= clk
+    to _in_BUS <= bus
+    to _ctrl_32 <= ctrl_eip
+    exp bus_eip <= _out_BUS
+}
+
+; SC
+register
+{
+    to _clk <= clk
+    to _in_BUS <= bus
+    to _ctrl_8 <= ctrl_sc
+    exp step_out <= _out_BUS[:8]
+}
+
+step <= or step_out rst; when rst no steps will be available for 255
+steps_0 <= xnor step 0
+steps_1 <= xnor step 1
+steps_2 <= xnor step 2
+steps_3 <= xnor step 3
+steps_4 <= xnor step 4
+steps_5 <= xnor step 5
+steps_6 <= xnor step 6
+steps_7 <= xnor step 7
+steps_8 <= xnor step 8
+steps_9 <= xnor step 9
+steps_A <= xnor step 10
+steps_B <= xnor step 11
+steps_C <= xnor step 12
+steps_D <= xnor step 13
+steps_E <= xnor step 14
+steps_F <= xnor step 15
+steps_10 <= xnor step 16
+steps_11 <= xnor step 17
+steps_12 <= xnor step 18
+steps_13 <= xnor step 19
+steps_14 <= xnor step 20
+steps_15 <= xnor step 21
+steps_16 <= xnor step 22
+steps_17 <= xnor step 23
+steps_18 <= xnor step 24
+steps_19 <= xnor step 25
+steps_1A <= xnor step 26
+steps_1B <= xnor step 27
+steps_1C <= xnor step 28
+steps_1D <= xnor step 29
+steps_1E <= xnor step 30
+steps_1F <= xnor step 31
+
+steps[0] <= or steps_0
+steps[1] <= or steps_1
+steps[2] <= or steps_2
+steps[3] <= or steps_3
+steps[4] <= or steps_4
+steps[5] <= or steps_5
+steps[6] <= or steps_6
+steps[7] <= or steps_7
+steps[8] <= or steps_8
+steps[9] <= or steps_9
+steps[10] <= or steps_A
+steps[11] <= or steps_B
+steps[12] <= or steps_C
+steps[13] <= or steps_D
+steps[14] <= or steps_E
+steps[15] <= or steps_F
+steps[16] <= or steps_10
+steps[17] <= or steps_11
+steps[18] <= or steps_12
+steps[19] <= or steps_13
+steps[20] <= or steps_14
+steps[21] <= or steps_15
+steps[22] <= or steps_16
+steps[23] <= or steps_17
+steps[24] <= or steps_18
+steps[25] <= or steps_19
+steps[26] <= or steps_1A
+steps[27] <= or steps_1B
+steps[28] <= or steps_1C
+steps[29] <= or steps_1D
+steps[30] <= or steps_1E
+steps[31] <= or steps_1F
+

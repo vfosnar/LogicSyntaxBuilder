@@ -1,0 +1,1 @@
+bash build.sh && python3 translate.py build/main.json "$1"
