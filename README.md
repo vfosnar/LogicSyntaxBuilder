@@ -8,4 +8,7 @@
     
     # this will build the whole project and export it to blueprints directory.
     # You need to restart steam after it if you are running this code for the first time
-    bash build.sh /path/to/Scrap/Mechanic/Blueprints/some_uuid4/
+    bash build_sm.sh /path/to/Scrap/Mechanic/Blueprints/some_uuid4/
+
+    # or you can simulate it without Scrap Mechanic
+    bash build_sim.sh
