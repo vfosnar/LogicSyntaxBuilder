@@ -47,7 +47,8 @@
         "_rst":[false],
         "_ctrl_alu":[false, true, false, false, false, false, false, false, false, false, false, false],
         "_ctrl_alu_arch":[false, false, true],
-        "_ctrl_alu_out":[true, false, false, false]
+        "_ctrl_alu_out":[true, false, false, false],
+        "_ctrl_flags":[true]
     },
     {
         "debug_show":[],
@@ -55,7 +56,8 @@
         "_rst":[false],
         "_ctrl_alu":[false, true, false, false, false, false, false, false, false, false, false, false],
         "_ctrl_alu_arch":[false, false, true],
-        "_ctrl_alu_out":[true, false, false, false]
+        "_ctrl_alu_out":[true, false, false, false],
+        "_ctrl_flags":[true]
     },
     {
         "debug_show":[],
