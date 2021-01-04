@@ -1,0 +1,119 @@
+reference:
+use build/adder_8bit.json as adder_8bit
+
+define:
+; IO
+in enable[1]
+in in_BUS[8]
+in in_TMP[8]
+in ctrl[12]
+
+out out_BUS[8]
+e_BUS[8]
+
+; Internal
+e_ADD[8]
+e_SUB[8]
+e_AND[8]
+e_ORR[8]
+e_XOR[8]
+e_ROL[8]
+e_ROR[8]
+e_SHL[8]
+e_SHR[8]
+e_INC[8]
+e_DEC[8]
+e_NOT[8]
+
+out_ADD[8]
+out_SUB[8]
+out_AND[8]
+out_ORR[8]
+out_XOR[8]
+out_ROL[8]
+out_ROR[8]
+out_SHL[8]
+out_SHR[8]
+out_INC[8]
+out_DEC[8]
+out_NOT[8]
+
+proc_SUB[8]
+
+assign:
+
+; BUS OUTPUT
+@*
+out_BUS <= and enable e_BUS
+*@
+e_BUS <= or e_ADD e_SUB e_AND e_ORR e_XOR e_ROL e_ROR e_SHL e_SHR e_INC e_DEC e_NOT
+
+; CONTROL ENABLE
+@*
+e_ADD <= and ctrl[0] out_ADD
+e_SUB <= and ctrl[1] out_SUB
+e_AND <= and ctrl[2] out_AND
+e_ORR <= and ctrl[3] out_ORR
+e_XOR <= and ctrl[4] out_XOR
+e_ROL <= and ctrl[5] out_ROL
+e_ROR <= and ctrl[6] out_ROR
+e_SHL <= and ctrl[7] out_SHL
+e_SHR <= and ctrl[8] out_SHR
+e_INC <= and ctrl[9] out_INC
+e_DEC <= and ctrl[10] out_DEC
+e_NOT <= and ctrl[11] out_NOT
+*@
+
+; ADD
+adder_8bit
+{
+    to _a <= in_BUS[0:8]
+    to _b <= in_TMP[0:8]
+    exp out_ADD <= _s
+}
+; SUB
+adder_8bit
+{
+    to _a <= nor in_TMP[0:8]
+    to _b <= 1
+    exp proc_SUB <= _s
+}
+adder_8bit
+{
+    to _a <= proc_SUB
+    to _b <= in_BUS[0:8]
+    exp out_SUB <= _s
+}
+; AND
+out_AND <= and in_TMP[0:8] in_BUS[0:8]
+; OR
+out_ORR <= or in_TMP[0:8] in_BUS[0:8]
+; XOR
+out_XOR <= xor in_TMP[0:8] in_BUS[0:8]
+; ROL
+out_ROL[0] <= and in_BUS[7] 1
+out_ROL[1:8] <= and in_BUS[0:7] 1
+; ROR
+out_ROR[0:7] <= and in_BUS[1:8] 1
+out_ROR[7] <= and in_BUS[0] 1
+; SHL
+out_SHL[1:8] <= and in_BUS[0:7] 1
+; SHR
+out_SHR[0:7] <= and in_BUS[1:8] 1
+
+; INC
+adder_8bit
+{
+    to _a <= in_BUS[0:8]
+    to _b <= 1
+    exp out_INC <= _s
+}
+; DEC
+adder_8bit
+{
+    to _a <= in_BUS[0:8]
+    to _b <= 255
+    exp out_DEC <= _s
+}
+; NOT
+out_NOT <= nor in_BUS[0:8]

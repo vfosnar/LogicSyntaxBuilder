@@ -1,5 +1,8 @@
 reference:
 use build/register.json as register
+use build/dflipflop_32bit.json as dflipflop_32bit
+use build/dflipflop_16bit.json as dflipflop_16bit
+use build/alu.json as alu
 ; |---------- E?X - 32 -----------|
 ; |               |    ?X - 16    |
 ; |               | ?H 88 | ?L  8 |
@@ -12,6 +15,24 @@ in rst[1]
 not_rst[1]
 out bus[32]
 bus_in[32]
+
+alu_tmp[32]
+alu_tmp_keep[32]
+alu_tmp_bus[32]
+alu_tmp_in[32]
+
+alu_out[32]
+
+flags[16]
+not_flags[16]
+flags_alu_in[16]
+flags_keep[16]
+flags_alu[16]
+flags_bus[16]
+flags_in[16]
+
+bus_alu[32]
+
 bus_eax[32]
 bus_ebx[32]
 bus_ecx[32]
@@ -19,30 +40,41 @@ bus_edx[32]
 bus_esp[32]
 bus_eip[32]
 
-ctrl_eax[14]
-ctrl_ebx[14]
-ctrl_ecx[14]
-ctrl_edx[14]
-ctrl_esp[14]
-ctrl_eip[14]
+ctrl_alu_tmp[1]
+not_ctrl_alu_tmp[1]
 
-ctrl_ax[14]
-ctrl_bx[14]
-ctrl_cx[14]
-ctrl_dx[14]
+ctrl_alu[12]
+ctrl_alu_arch[3]
 
-ctrl_ah[14]
-ctrl_bh[14]
-ctrl_ch[14]
-ctrl_dh[14]
+ctrl_flags[1]
+not_ctrl_flags[1]
 
-ctrl_al[14]
-ctrl_bl[14]
-ctrl_cl[14]
-ctrl_dl[14]
+ctrl_alu_out[4]
+
+ctrl_eax[4]
+ctrl_ebx[4]
+ctrl_ecx[4]
+ctrl_edx[4]
+ctrl_esp[4]
+ctrl_eip[4]
+
+ctrl_ax[4]
+ctrl_bx[4]
+ctrl_cx[4]
+ctrl_dx[4]
+
+ctrl_ah[4]
+ctrl_bh[4]
+ctrl_ch[4]
+ctrl_dh[4]
+
+ctrl_al[4]
+ctrl_bl[4]
+ctrl_cl[4]
+ctrl_dl[4]
 
 ; 8 bit step counter
-ctrl_sc[14]
+ctrl_sc[4]
 step[8]
 step_out[8]
 steps_0[8]
@@ -82,8 +114,58 @@ steps[32]
 
 assign:
 not_rst <= nor rst
-bus <= and bus_in not_rst
-bus_in <= or bus_eax bus_ebx bus_ecx bus_edx bus_eip bus_esp
+
+@bus <= and bus_in not_rst
+
+bus_in <= or bus_alu bus_eax bus_ebx bus_ecx bus_edx bus_eip bus_esp
+
+; ALU TMP REGISTER
+not_ctrl_alu_tmp <= nor ctrl_alu_tmp
+@alu_tmp_keep <= and not_ctrl_alu_tmp alu_tmp
+
+@alu_tmp_bus <= and ctrl_alu_tmp bus
+
+alu_tmp_in <= or alu_tmp_keep alu_tmp_bus
+dflipflop_32bit
+{
+    to _clk <= clk
+    to _inp <= alu_tmp_in
+    exp alu_tmp <= _Q
+}
+
+; ALU
+alu
+{
+    to _in_BUS <= bus
+    to _in_TMP <= alu_tmp
+    to _ctrl <= ctrl_alu
+    to _arch <= ctrl_alu_arch
+    exp alu_out <= _out_BUS
+    exp flags_alu_in <= _flags
+}
+; ALU Flags register
+not_ctrl_flags <= nor ctrl_flags
+@flags_keep <= and not_ctrl_flags flags
+
+@flags_alu <= and ctrl_flags flags_alu_in
+
+flags_in <= or flags_keep flags_alu
+dflipflop_16bit
+{
+    to _clk <= clk
+    to _inp <= flags_in
+    exp flags <= _Q
+    exp not_flags <= _NQ
+}
+
+; ALU OUT REGISTER
+register
+{
+    to _clk <= clk
+    to _in_BUS <= alu_out
+    to _ctrl_32 <= ctrl_alu_out
+    exp bus_alu <= _out_BUS
+}
 
 ; EAX
 register
@@ -159,7 +241,7 @@ register
     to _ctrl_8 <= ctrl_sc
     exp step_out <= _out_BUS[:8]
 }
-
+@*
 step <= or step_out rst; when rst no steps will be available for 255
 steps_0 <= xnor step 0
 steps_1 <= xnor step 1
@@ -226,4 +308,4 @@ steps[28] <= or steps_1C
 steps[29] <= or steps_1D
 steps[30] <= or steps_1E
 steps[31] <= or steps_1F
-
+*@

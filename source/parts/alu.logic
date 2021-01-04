@@ -1,0 +1,65 @@
+reference:
+use build/alu_8bit.json as alu_8bit
+use build/alu_16bit.json as alu_16bit
+use build/alu_32bit.json as alu_32bit
+
+define:
+in in_BUS[32]
+in in_TMP[32]
+
+in ctrl[12]
+;  0 ADD
+;  1 SUB
+;  2 AND
+;  3 OR
+;  4 XOR
+;  5 ROL
+;  6 ROR
+;  7 SHL
+;  8 SHR
+;  9 INC
+; 10 DEC
+; 11 NOT
+
+in arch[3]
+;  0 8bit
+;  1 16bit
+;  2 32bit
+
+out out_BUS[32]
+out8_BUS[32]
+out16_BUS[32]
+out32_BUS[32]
+
+out flags[16]
+
+assign:
+; collect vectors to BUS
+out_BUS <= or out8_BUS out16_BUS out32_BUS
+
+alu_8bit
+{
+    to _enable <= arch[0]
+    to _ctrl <= ctrl
+    to _in_BUS <= in_BUS[:8]
+    to _in_TMP <= in_TMP[:8]
+    exp out8_BUS[:8] <= _out_BUS
+}
+
+alu_16bit
+{
+    to _enable <= arch[1]
+    to _ctrl <= ctrl
+    to _in_BUS <= in_BUS[:16]
+    to _in_TMP <= in_TMP[:16]
+    exp out16_BUS[:16] <= _out_BUS
+}
+
+alu_32bit
+{
+    to _enable <= arch[2]
+    to _ctrl <= ctrl
+    to _in_BUS <= in_BUS[:32]
+    to _in_TMP <= in_TMP[:32]
+    exp out32_BUS[:32] <= _out_BUS
+}

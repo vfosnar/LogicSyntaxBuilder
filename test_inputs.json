@@ -11,49 +11,56 @@
     {
         "_clk":[false],
         "_rst":[false],
-        "_ctrl_eax":[true, false, false, false, false, false, false, false, false, false, false, false, false, false]
+        "_ctrl_eax":[true, false, false, false]
     },
     {
         "_clk":[true],
         "_rst":[false],
-        "_ctrl_eax":[true, false, false, false, false, false, false, false, false, false, false, false, false, false]
+        "_ctrl_eax":[true, false, false, false]
     },
     {
         "_clk":[false],
         "_rst":[false],
-        "_ctrl_ah":[false, false, false, false, false, false, false, false, false, false, false, false, false, true]
+        "_ctrl_eax":[false, false, true, false]
     },
     {
         "_clk":[true],
         "_rst":[false],
-        "_ctrl_ah":[false, false, false, false, false, false, false, false, false, false, false, false, false, true]
+        "_ctrl_eax":[false, false, true, false]
+    },
+    {
+        "_clk":[false],
+        "_rst":[false],
+        "_ctrl_eax":[false, true, false, false],
+        "_ctrl_alu_tmp":[true]
+    },
+    {
+        "debug_show":[],
+        "_clk":[true],
+        "_rst":[false],
+        "_ctrl_eax":[false, true, false, false],
+        "_ctrl_alu_tmp":[true]
     },
     {
         "debug_show":[],
         "_clk":[false],
         "_rst":[false],
-        "_ctrl_ah":[false, false, false, false, false, false, false, false, false, false, true, false, false, false]
+        "_ctrl_alu":[false, true, false, false, false, false, false, false, false, false, false, false],
+        "_ctrl_alu_arch":[false, false, true],
+        "_ctrl_alu_out":[true, false, false, false]
     },
     {
         "debug_show":[],
-        "_clk":[false],
-        "_rst":[false],
-        "_ctrl_ax":[false, false, false, false, false, false, false, false, false, false, true, false, false, false]
-    },
-    {
-        "_clk":[false],
-        "_rst":[false],
-        "_ctrl_ax":[false, false, false, false, false, false, false, false, false, false, false, false, false, true]
-    },
-    {
         "_clk":[true],
         "_rst":[false],
-        "_ctrl_ax":[false, false, false, false, false, false, false, false, false, false, false, false, false, true]
+        "_ctrl_alu":[false, true, false, false, false, false, false, false, false, false, false, false],
+        "_ctrl_alu_arch":[false, false, true],
+        "_ctrl_alu_out":[true, false, false, false]
     },
     {
         "debug_show":[],
         "_clk":[false],
         "_rst":[false],
-        "_ctrl_ax":[false, false, false, false, false, false, false, false, false, false, true, false, false, false]
+        "_ctrl_alu_out":[false, true, false, false]
     }
 ]

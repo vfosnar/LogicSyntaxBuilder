@@ -1,13 +1,14 @@
 import json
 import sys
 from tqdm import tqdm
+import time
 
 if __name__ == "__main__":
     global vector_activations
     global file
     file = json.loads(open(sys.argv[1], "rb").read().decode())
     file_inputs = json.loads(open(sys.argv[2], "rb").read().decode())
-    times = 50
+    times = 120
     if(len(sys.argv) == 4):
         times = sys.argv[3]
     vector_activations = {vec:[False for gate in file[vec][1]] for vec in list(file) if file[vec][0] != 1}
@@ -71,5 +72,10 @@ if __name__ == "__main__":
                 sys.stdout.write("|")
                 sys.stdout.write('\n')
     
-    for inputs in file_inputs:
+    start = time.time()
+
+    for i, inputs in enumerate(file_inputs):
+        print()
+        print("Epoch {}".format(i))
         epoch(inputs, times)
+        print("Finished at speed {}/s".format(int((i+1)/(time.time()-start) * 1000)/1000))

@@ -25,16 +25,16 @@ dff12[32]
 
 assign:
 clkneg <= nor clk
-pass0[:32] <= and clkneg inp[:32]
+@pass0[:32] <= and clkneg inp[:32]
 inpneg[:32] <= nor inp[:32]
-pass1[:32] <= and clkneg inpneg[:32]
+@pass1[:32] <= and clkneg inpneg[:32]
 
 dff00[:32] <= nor pass0[:32] dff02[:32]
 dff01[:32] <= dff00[:32]
 dff02[:32] <= nor pass1[:32] dff01[:32]
 
-passQ[:32] <= and clk dff00[:32]
-passNQ[:32] <= and clk dff02[:32]
+@passQ[:32] <= and clk dff00[:32]
+@passNQ[:32] <= and clk dff02[:32]
 
 dff10[:32] <= nor passQ[:32] dff12[:32]
 dff11[:32] <= dff10[:32]
