@@ -1,3 +1,5 @@
 build_custom.sh
 .vscode/*
 CPPSimulator/.vscode/*
+sim
+data

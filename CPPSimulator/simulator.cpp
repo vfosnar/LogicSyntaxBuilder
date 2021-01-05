@@ -2,8 +2,10 @@
 #include <fstream>
 #include <stdint.h>
 using namespace std;
+#include <chrono>
+using namespace std::chrono;
 
-int step(uint32_t gateCount, bool* gateValues, unsigned char* gateTypes, uint32_t* gateParents)
+int simStep(uint32_t gateCount, bool* gateValues, unsigned char* gateTypes, uint32_t* gateParents)
 {
     uint32_t i = 0;
     uint32_t parentCount;
@@ -12,8 +14,7 @@ int step(uint32_t gateCount, bool* gateValues, unsigned char* gateTypes, uint32_
     bool parentValue;
 
     bool gateValuesNew[gateCount];
-    cout << "=== STEP ===" << endl;
-    for(int iGate = 0; iGate < gateCount; iGate++)
+    for(uint32_t iGate = 0; iGate < gateCount; iGate++)
     {
         parentCount = gateParents[i];
         i++;
@@ -24,8 +25,7 @@ int step(uint32_t gateCount, bool* gateValues, unsigned char* gateTypes, uint32_
             for(uint32_t iParent = 0; iParent < parentCount; iParent++)
             {
                 parentValue = gateValues[gateParents[i]];
-                gateActive = gateActive && parentValue;
-
+                gateActive = gateActive & parentValue;
                 i++;
             }
         }
@@ -35,8 +35,7 @@ int step(uint32_t gateCount, bool* gateValues, unsigned char* gateTypes, uint32_
             for(uint32_t iParent = 0; iParent < parentCount; iParent++)
             {
                 parentValue = gateValues[gateParents[i]];
-                gateActive = gateActive || parentValue;
-
+                gateActive = gateActive | parentValue;
                 i++;
             }
         }
@@ -47,17 +46,15 @@ int step(uint32_t gateCount, bool* gateValues, unsigned char* gateTypes, uint32_
             {
                 parentValue = gateValues[gateParents[i]];
                 gateActive = gateActive ^ parentValue;
-
                 i++;
             }
         }
         if(gateType >= 3)
             gateActive = !gateActive;
-        gateValuesNew[iGate] = gateActive;
-        cout << "Gate: " << iGate << " Value: " << gateActive << " Type: " << gateType+0 << endl;
         
+        gateValuesNew[iGate] = gateActive;
     }
-    for(int iGate = 0; iGate < gateCount; iGate++)
+    for(uint32_t iGate = 0; iGate < gateCount; iGate++)
     {
         gateValues[iGate] = gateValuesNew[iGate];
     }
@@ -72,7 +69,7 @@ int main()
     $SIZE bytes             = gateTypes
     4 bytes                 = dataSize (parent data)
     $dataSize bytes         = gateParents
-    
+
     ## ARRAY ##
     4 byte                  = SIZE
     $SIZE of 4 byte items   = content
@@ -99,7 +96,7 @@ int main()
         // clear gateValues
         gateValues[i] = false;
         file.read((char*)&gateTypes[i], 1);
-        cout << gateTypes[i]+0 << endl;
+        //cout << gateTypes[i]+0 << endl;
     }
 
     uint32_t dataSize;
@@ -110,7 +107,61 @@ int main()
         file.read((char*)&gateParents[i], 4);
     }
     file.close();
-    step(gateCount, gateValues, gateTypes, gateParents);
-    step(gateCount, gateValues, gateTypes, gateParents);
+
+    fstream sim_file;
+    sim_file.open("sim", ios::in);
+    uint32_t outputCount;
+    sim_file.read((char*)&outputCount, 4);
+    uint32_t outputBegin[outputCount];
+    uint32_t outputEnd[outputCount];
+    for(uint32_t i = 0; i < outputCount; i++)
+    {
+        sim_file.read((char*)&outputBegin[i], 4);
+        sim_file.read((char*)&outputEnd[i], 4);
+    }
+    
+    uint32_t inputCount;
+    sim_file.read((char*)&inputCount, 4);
+    uint32_t inputSize;
+    sim_file.read((char*)&inputSize, 4);
+
+    bool inputs[inputCount][inputSize];
+    for(uint32_t step = 0; step < inputCount; step++)
+    {
+        for(uint32_t i = 0; i < inputSize; i++)
+        {
+            sim_file.read((char*)&inputs[step][i], 1);
+        }
+    }
+
+    sim_file.close();
+
+    for(uint32_t step = 0; step < inputCount; step++)
+    {
+        cout << "=== STEP ===" << endl;
+        auto start = high_resolution_clock::now(); 
+        for(int x = 0; x < 120; x++)
+        {
+            for(uint32_t i = 0; i < inputSize; i++)
+            {
+                gateValues[i] = inputs[step][i];
+            }
+            simStep(gateCount, gateValues, gateTypes, gateParents);
+        }
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<microseconds>(stop - start); 
+        cout << duration.count()/1000 << "ms/step" << endl;
+        
+        cout << "|";
+        for(uint32_t i = 0; i < outputCount; i++)
+        {
+            for(uint32_t iGate = outputBegin[i]; iGate < outputEnd[i]; iGate++)
+            {
+                cout << (gateValues[iGate] ? u8"█" : "_");
+            }
+            cout << "|";
+        }
+        cout << endl;
+    }
     return 0;
 }

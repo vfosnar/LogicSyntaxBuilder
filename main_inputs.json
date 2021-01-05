@@ -1,0 +1,39 @@
+
+[
+    {
+        "_clk":[false],
+        "_rst":[true],
+        "_ctrl_eax":[false, false, false, false]
+    },
+    {
+        "_clk":[true],
+        "_rst":[true],
+        "_ctrl_eax":[false, false, false, false]
+    },
+    {
+        "_clk":[false],
+        "_rst":[false],
+        "_ctrl_eax":[true, false, false, false]
+    },
+    {
+        "_clk":[true],
+        "_rst":[false],
+        "_ctrl_eax":[true, false, false, false]
+    },
+    {
+        "_clk":[false],
+        "_rst":[false],
+        "_ctrl_eax":[false, false, true, false]
+    },
+    {
+        "_clk":[true],
+        "_rst":[false],
+        "_ctrl_eax":[false, false, true, false]
+    },
+    {
+        "debug_show":[],
+        "_clk":[false],
+        "_rst":[false],
+        "_ctrl_eax":[false, true, false, false]
+    }
+]

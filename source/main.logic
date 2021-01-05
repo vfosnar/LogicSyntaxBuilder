@@ -51,7 +51,7 @@ not_ctrl_flags[1]
 
 ctrl_alu_out[4]
 
-ctrl_eax[4]
+in ctrl_eax[4]
 ctrl_ebx[4]
 ctrl_ecx[4]
 ctrl_edx[4]
