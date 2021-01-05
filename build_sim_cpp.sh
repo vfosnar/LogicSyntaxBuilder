@@ -1,0 +1,1 @@
+bash build.sh && CPPSimulator/packer.py build/main.json test_inputs.json

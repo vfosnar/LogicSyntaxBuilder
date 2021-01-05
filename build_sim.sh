@@ -1,1 +1,1 @@
-bash build.sh && python3 simulator.py build/main.json test_inputs.json
+bash build.sh && python3 PythonSimulator/simulator.py build/main.json test_inputs.json
