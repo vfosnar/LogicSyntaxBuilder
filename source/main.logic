@@ -40,16 +40,16 @@ bus_edx[32]
 bus_esp[32]
 bus_eip[32]
 
-ctrl_alu_tmp[1]
+in ctrl_alu_tmp[1]
 not_ctrl_alu_tmp[1]
 
-ctrl_alu[12]
-ctrl_alu_arch[3]
+in ctrl_alu[12]
+in ctrl_alu_arch[3]
 
 ctrl_flags[1]
 not_ctrl_flags[1]
 
-ctrl_alu_out[4]
+in ctrl_alu_out[4]
 
 in ctrl_eax[4]
 ctrl_ebx[4]
