@@ -1,0 +1,29 @@
+
+define:
+
+sel_0_vec[32]
+sel_0[1]
+val_0[8]
+
+sel_1_vec[32]
+sel_1[1]
+val_1[8]
+
+out out_BUS[32]
+bus[8]
+in address[32]
+in RE[1]
+
+assign:
+
+sel_0_vec <= xor 0 address
+@sel_0 <= nor sel_0_vec
+@val_0 <= and sel_0 12
+
+sel_1_vec <= xor 1 address
+@sel_1 <= nor sel_1_vec
+@val_1 <= and sel_1 19
+
+@out_BUS[:8] <= and RE bus
+bus <= or val_0 val_1
+

@@ -64,6 +64,5 @@ for input_ in file_inputs:
         vecPosition = vector_offset_table[vec]
         for gateOffset in range(len(vector_inputs[vec])):
             inputs[vecPosition + gateOffset] = input_[vec][gateOffset]
-    print(struct.pack('<{}?'.format(inputSize), *inputs))
     f_sim.write(struct.pack('<{}?'.format(inputSize), *inputs))
 f_sim.close()

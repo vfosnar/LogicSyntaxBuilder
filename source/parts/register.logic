@@ -14,7 +14,7 @@ out_bus_88[32]
 out_bus_16[32]
 out_bus_32[32]
 
-out_dff[32]
+out out_dff[32]
 
 ; 0 SET
 ; 1 OUT
