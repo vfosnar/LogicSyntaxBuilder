@@ -40,9 +40,6 @@ JMP <r32>
 
 MOV <r> <r/m/imm>
 
-POP <r>
-PUSH <r>
-
 OTHER OPERATIONS:
 CALL <r/m/imm>
 MOV <m> <r/m/imm>
@@ -68,6 +65,9 @@ ROL
 ROR
 SHL
 SHR
+INC
+DEC
+NOT
 
 # ONE PARAMETER
 # _8 _16 _32

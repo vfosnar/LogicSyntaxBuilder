@@ -2,7 +2,7 @@ define = ""
 assign = ""
 
 code = [
-    12, 19
+    0x0C, 0x0C, 0x00, 0x9A, 5
 ]
 
 for i, value in enumerate(code):
