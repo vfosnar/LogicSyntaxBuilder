@@ -25,6 +25,17 @@ e_INC[16]
 e_DEC[16]
 e_NOT[16]
 
+bus_one[16]
+bus_eight[16]
+
+bus[32]
+
+out_SHL1[16]
+out_SHL8[16]
+
+out_SHR1[16]
+out_SHR8[16]
+
 out_ADD[16]
 out_SUB[16]
 out_AND[16]
@@ -64,6 +75,12 @@ e_DEC <= and ctrl[10] out_DEC
 e_NOT <= and ctrl[11] out_NOT
 *@
 
+bus_one <= xor in_BUS 1
+bus_eight <= xor in_BUS 8
+
+@bus[1] <= nor bus_one
+@bus[8] <= nor bus_eight
+
 ; ADD
 adder_16bit
 {
@@ -97,10 +114,13 @@ out_ROL[1:16] <= and in_BUS[0:15] 1
 out_ROR[0:15] <= and in_BUS[1:16] 1
 out_ROR[15] <= and in_BUS[0] 1
 ; SHL
-out_SHL[1:16] <= and in_BUS[0:15] 1
+out_SHL <= or out_SHL1 out_SHL8
+@out_SHL1[1:16] <= and in_TMP[0:15] bus[1]
+@out_SHL8[8:16] <= and in_TMP[0:8] bus[8]
 ; SHR
-out_SHR[0:15] <= and in_BUS[1:16] 1
-
+out_SHR <= or out_SHR1 out_SHR8
+@out_SHR1[0:15] <= and in_BUS[1:16] bus[1]
+@out_SHR8[0:8] <= and in_BUS[8:16] bus[8]
 ; INC
 adder_16bit
 {

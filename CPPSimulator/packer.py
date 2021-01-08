@@ -18,7 +18,7 @@ last_offset = 0
 gateTypes = []
 gateParents = []
 
-print("Inputs")
+print("=== Inputs ===")
 for vec in list(vector_inputs):
     vector_offset_table[vec] = last_offset
     last_offset += len(vector_inputs[vec])
@@ -33,7 +33,7 @@ for vec in list(vector_activators):
     vector_offset_table[vec] = last_offset
     last_offset += len(vector_activators[vec])
 
-print("Outputs")
+print("=== Outputs ===")
 output = []
 for vec in list(vector_activators):
     if(file[vec][0] == 2):

@@ -10,6 +10,8 @@ use build/ROM.json as ROM
 ; |-------------------------------|
 ; 2^32            2^16    2^8     0
 
+; ctrl_x
+;   write x to bus
 ; ctrl_mi
 ;   set
 ; ctrl_ram
@@ -66,6 +68,12 @@ in rst[1]
 not_rst[1]
 out bus[32]
 bus_in[32]
+
+bus_1[32]
+bus_8[32]
+
+ctrl_1[1]
+ctrl_8[1]
 
 alu_tmp[32]
 alu_tmp_keep[32]
@@ -476,7 +484,11 @@ not_rst <= nor rst
 
 @bus <= and bus_in not_rst
 
-bus_in <= or bus_alu bus_rom bus_eax bus_ebx bus_ecx bus_edx bus_eip bus_esp
+bus_in <= or bus_alu bus_rom bus_eax bus_ebx bus_ecx bus_edx bus_eip bus_esp bus_1 bus_8
+@*
+bus_1 <= and ctrl_1 1
+bus_8 <= and ctrl_8 8
+*@
 
 ; ALU TMP REGISTER
 not_ctrl_alu_tmp <= nor ctrl_alu_tmp

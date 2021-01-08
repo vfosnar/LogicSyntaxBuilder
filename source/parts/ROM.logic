@@ -21,6 +21,18 @@ sel_4_vec[32]
 sel_4[1]
 val_4[8]
 
+sel_5_vec[32]
+sel_5[1]
+val_5[8]
+
+sel_6_vec[32]
+sel_6[1]
+val_6[8]
+
+sel_7_vec[32]
+sel_7[1]
+val_7[8]
+
 out out_BUS[32]
 bus[8]
 in address[32]
@@ -30,11 +42,11 @@ assign:
 
 sel_0_vec <= xor 0 address
 @sel_0 <= nor sel_0_vec
-@val_0 <= and sel_0 12
+@val_0 <= and sel_0 1
 
 sel_1_vec <= xor 1 address
 @sel_1 <= nor sel_1_vec
-@val_1 <= and sel_1 12
+@val_1 <= and sel_1 153
 
 sel_2_vec <= xor 2 address
 @sel_2 <= nor sel_2_vec
@@ -42,12 +54,24 @@ sel_2_vec <= xor 2 address
 
 sel_3_vec <= xor 3 address
 @sel_3 <= nor sel_3_vec
-@val_3 <= and sel_3 154
+@val_3 <= and sel_3 0
 
 sel_4_vec <= xor 4 address
 @sel_4 <= nor sel_4_vec
-@val_4 <= and sel_4 5
+@val_4 <= and sel_4 0
+
+sel_5_vec <= xor 5 address
+@sel_5 <= nor sel_5_vec
+@val_5 <= and sel_5 7
+
+sel_6_vec <= xor 6 address
+@sel_6 <= nor sel_6_vec
+@val_6 <= and sel_6 5
+
+sel_7_vec <= xor 7 address
+@sel_7 <= nor sel_7_vec
+@val_7 <= and sel_7 105
 
 @out_BUS[:8] <= and RE bus
-bus <= or val_0 val_1 val_2 val_3 val_4
+bus <= or val_0 val_1 val_2 val_3 val_4 val_5 val_6 val_7
 

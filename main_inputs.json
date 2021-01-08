@@ -119,5 +119,37 @@
     {
         "_clk":[true],
         "_rst":[false]
+    },
+    {
+        "_clk":[false],
+        "_rst":[false]
+    },
+    {
+        "_clk":[true],
+        "_rst":[false]
+    },
+    {
+        "_clk":[false],
+        "_rst":[false]
+    },
+    {
+        "_clk":[true],
+        "_rst":[false]
+    },
+    {
+        "_clk":[false],
+        "_rst":[false]
+    },
+    {
+        "_clk":[true],
+        "_rst":[false]
+    },
+    {
+        "_clk":[false],
+        "_rst":[false]
+    },
+    {
+        "_clk":[true],
+        "_rst":[false]
     }
 ]

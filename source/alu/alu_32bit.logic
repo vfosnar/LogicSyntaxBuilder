@@ -25,6 +25,17 @@ e_INC[32]
 e_DEC[32]
 e_NOT[32]
 
+bus_one[32]
+bus_eight[32]
+
+bus[32]
+
+out_SHL1[32]
+out_SHL8[32]
+
+out_SHR1[32]
+out_SHR8[32]
+
 out_ADD[32]
 out_SUB[32]
 out_AND[32]
@@ -64,6 +75,12 @@ e_DEC <= and ctrl[10] out_DEC
 e_NOT <= and ctrl[11] out_NOT
 *@
 
+bus_one <= xor in_BUS 1
+bus_eight <= xor in_BUS 8
+
+@bus[1] <= nor bus_one
+@bus[8] <= nor bus_eight
+
 ; ADD
 adder_32bit
 {
@@ -97,10 +114,13 @@ out_ROL[1:32] <= and in_BUS[0:31] 1
 out_ROR[0:31] <= and in_BUS[1:32] 1
 out_ROR[31] <= and in_BUS[0] 1
 ; SHL
-out_SHL[1:32] <= and in_BUS[0:31] 1
+out_SHL <= or out_SHL1 out_SHL8
+@out_SHL1[1:32] <= and in_TMP[0:31] bus[1]
+@out_SHL8[8:32] <= and in_TMP[0:24] bus[8]
 ; SHR
-out_SHR[0:31] <= and in_BUS[1:32] 1
-
+out_SHR <= or out_SHR1 out_SHR8
+@out_SHR1[0:31] <= and in_BUS[1:32] bus[1]
+@out_SHR8[0:24] <= and in_BUS[8:32] bus[8]
 ; INC
 adder_32bit
 {
