@@ -104,15 +104,44 @@ inputs.append(["ctrl_irr", 0, 3, [0x0C]])
 inputs.append(["ctrl_eip", 2, 3, [0x0C]]) # EIP++
 
 # INSTRUCTION
+## with value preload
 #
 # all imm/m/r/[r]
-# imm   m    r   [r] #
-#  00   01   02   03 #
-#  04   05   06   07 #
-#  08   09   0A   0B #
+# imm   m    r   [r]
+#  00   01   02   03  byte
+#  04   05   06   07  word
+#  08   09   0A   0B  long
 #
-# no preloading
+# instructions
+# 00 ADD
+# 11 SUB
+# 22 OR
+# 33 XOR
+# 44 ROL
+# 55 ROR
+# 66 SHL
+# 77 SHR
+# 88 CMP
+# 99 MOV
+# AA MOVM
+# BB CALL
+# CC POP
+# DD PUSH
+#
+## without value preload
+#
 # 0C
+#
+# instructions
+# 00 RST
+# 11 INC
+# 22 DEC
+# 33 NOT
+
+# PRELOAD INDICATOR -> ir
+# INSTRUCTION -> irr
+# execute preload
+# execute instruction
 
 id_ = 0
 for reg in regs8 + regs16 + regs32:
