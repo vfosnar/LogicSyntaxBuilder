@@ -111,6 +111,54 @@ ctrl_alu_arch[3]
 
 ctrl_alu_out[4]
 
+ctrl_rs[4]
+rs_out_cond[8]
+rs_out[8]
+
+open_al[8]
+open_ah[8]
+open_bl[8]
+open_bh[8]
+open_cl[8]
+open_ch[8]
+open_dl[8]
+open_dh[8]
+
+open_ax[8]
+open_bx[8]
+open_cx[8]
+open_dx[8]
+
+open_eax[8]
+open_ebx[8]
+open_esp[8]
+open_ecx[8]
+open_edx[8]
+
+reg_open[17]
+
+ctrl_open[4]
+
+ctrl_open_al[4]
+ctrl_open_ah[4]
+ctrl_open_bl[4]
+ctrl_open_bh[4]
+ctrl_open_cl[4]
+ctrl_open_ch[4]
+ctrl_open_dl[4]
+ctrl_open_dh[4]
+
+ctrl_open_ax[4]
+ctrl_open_bx[4]
+ctrl_open_cx[4]
+ctrl_open_dx[4]
+
+ctrl_open_eax[4]
+ctrl_open_ebx[4]
+ctrl_open_esp[4]
+ctrl_open_ecx[4]
+ctrl_open_edx[4]
+
 ctrl_eax[4]
 ctrl_ebx[4]
 ctrl_ecx[4]
@@ -531,8 +579,42 @@ cond_12_9[1]
 cond_13_9[1]
 cond_14_9[1]
 cond_15_9[1]
+cond_2_2[1]
+cond_3_2[1]
+cond_4_2[1]
+cond_5_2[1]
+cond_6_2[1]
+cond_2_6[1]
+cond_3_6[1]
+cond_4_6[1]
+cond_5_6[1]
+cond_6_6[1]
+cond_2_10[1]
+cond_3_10[1]
+cond_4_10[1]
+cond_5_10[1]
+cond_6_10[1]
+cond_2_3[1]
+cond_3_3[1]
+cond_4_3[1]
+cond_5_3[1]
+cond_6_3[1]
+cond_7_3[1]
+cond_2_7[1]
+cond_3_7[1]
+cond_4_7[1]
+cond_5_7[1]
+cond_6_7[1]
+cond_7_7[1]
+cond_2_11[1]
+cond_3_11[1]
+cond_4_11[1]
+cond_5_11[1]
+cond_6_11[1]
+cond_7_11[1]
 cond_2_12[1]
 cond_3_12[1]
+cond_2_13[1]
 cond_4_12-0[1]
 cond_5_12-0[1]
 cond_4_12-1[1]
@@ -599,6 +681,38 @@ cond_15_1-159[1]
 cond_16_1-159[1]
 cond_15_1-160[1]
 cond_16_1-160[1]
+cond_7_2-153[1]
+cond_8_2-153[1]
+cond_7_2-154[1]
+cond_8_2-154[1]
+cond_7_2-155[1]
+cond_8_2-155[1]
+cond_7_2-156[1]
+cond_8_2-156[1]
+cond_7_2-157[1]
+cond_8_2-157[1]
+cond_7_2-158[1]
+cond_8_2-158[1]
+cond_7_2-159[1]
+cond_8_2-159[1]
+cond_7_2-160[1]
+cond_8_2-160[1]
+cond_7_3-153[1]
+cond_8_3-153[1]
+cond_7_3-154[1]
+cond_8_3-154[1]
+cond_7_3-155[1]
+cond_8_3-155[1]
+cond_7_3-156[1]
+cond_8_3-156[1]
+cond_7_3-157[1]
+cond_8_3-157[1]
+cond_7_3-158[1]
+cond_8_3-158[1]
+cond_7_3-159[1]
+cond_8_3-159[1]
+cond_7_3-160[1]
+cond_8_3-160[1]
 
 
 assign:
@@ -666,15 +780,85 @@ ROM
     exp bus_rom <= _out_BUS
 }
 
+; RS
+register
+{
+    to _clk <= clk
+    to _in_BUS <= bus
+    to _ctrl_8 <= ctrl_rs
+    exp rs_out <= _out_dff[:8]
+}
+
+open_al <= xor rs_out 0
+open_ah <= xor rs_out 1
+open_bl <= xor rs_out 2
+open_bh <= xor rs_out 3
+open_cl <= xor rs_out 4
+open_ch <= xor rs_out 5
+open_dl <= xor rs_out 6
+open_dh <= xor rs_out 7
+
+open_ax <= xor rs_out 8
+open_bx <= xor rs_out 9
+open_cx <= xor rs_out 10
+open_dx <= xor rs_out 11
+
+open_eax <= xor rs_out 12
+open_ebx <= xor rs_out 13
+open_ecx <= xor rs_out 14
+open_edx <= xor rs_out 15
+open_esp <= xor rs_out 16
+@*
+reg_open[0] <= nor open_al
+reg_open[1] <= nor open_ah
+reg_open[2] <= nor open_bl
+reg_open[3] <= nor open_bh
+reg_open[4] <= nor open_cl
+reg_open[5] <= nor open_ch
+reg_open[6] <= nor open_dl
+reg_open[7] <= nor open_dh
+
+reg_open[8] <= nor open_ax
+reg_open[9] <= nor open_bx
+reg_open[10] <= nor open_cx
+reg_open[11] <= nor open_dx
+
+reg_open[12] <= nor open_eax
+reg_open[13] <= nor open_ebx
+reg_open[14] <= nor open_ecx
+reg_open[15] <= nor open_edx
+reg_open[16] <= nor open_esp
+
+ctrl_open_al <= and ctrl_open reg_open[0]
+ctrl_open_ah <= and ctrl_open reg_open[1]
+ctrl_open_bl <= and ctrl_open reg_open[2]
+ctrl_open_bh <= and ctrl_open reg_open[3]
+ctrl_open_cl <= and ctrl_open reg_open[4]
+ctrl_open_ch <= and ctrl_open reg_open[5]
+ctrl_open_dl <= and ctrl_open reg_open[6]
+ctrl_open_dh <= and ctrl_open reg_open[7]
+
+ctrl_open_ax <= and ctrl_open reg_open[8]
+ctrl_open_bx <= and ctrl_open reg_open[9]
+ctrl_open_cx <= and ctrl_open reg_open[10]
+ctrl_open_dx <= and ctrl_open reg_open[11]
+
+ctrl_open_eax <= and ctrl_open reg_open[12]
+ctrl_open_ebx <= and ctrl_open reg_open[13]
+ctrl_open_ecx <= and ctrl_open reg_open[14]
+ctrl_open_edx <= and ctrl_open reg_open[15]
+ctrl_open_esp <= and ctrl_open reg_open[16]
+*@
+
 ; EAX
 register
 {
     to _clk <= clk
     to _in_BUS <= bus
-    to _ctrl_32 <= ctrl_eax
-    to _ctrl_16 <= ctrl_ax
-    to _ctrl_88 <= ctrl_ah
-    to _ctrl_8 <= ctrl_al
+    to _ctrl_32 <= or ctrl_eax ctrl_open_eax
+    to _ctrl_88 <= or ctrl_ah ctrl_open_ah
+    to _ctrl_16 <= or ctrl_ax ctrl_open_ax
+    to _ctrl_8 <= or ctrl_al ctrl_open_al
     exp bus_eax <= _out_BUS
 }
 
@@ -683,10 +867,10 @@ register
 {
     to _clk <= clk
     to _in_BUS <= bus
-    to _ctrl_32 <= ctrl_ebx
-    to _ctrl_16 <= ctrl_bx
-    to _ctrl_88 <= ctrl_bh
-    to _ctrl_8 <= ctrl_bl
+    to _ctrl_32 <= or ctrl_ebx ctrl_open_ebx
+    to _ctrl_16 <= or ctrl_bx ctrl_open_bx
+    to _ctrl_88 <= or ctrl_bh ctrl_open_bh
+    to _ctrl_8 <= or ctrl_bl ctrl_open_bl
     exp bus_ebx <= _out_BUS
 }
 
@@ -695,10 +879,10 @@ register
 {
     to _clk <= clk
     to _in_BUS <= bus
-    to _ctrl_32 <= ctrl_ecx
-    to _ctrl_16 <= ctrl_cx
-    to _ctrl_88 <= ctrl_ch
-    to _ctrl_8 <= ctrl_cl
+    to _ctrl_32 <= or ctrl_ecx ctrl_open_ecx
+    to _ctrl_16 <= or ctrl_cx ctrl_open_cx
+    to _ctrl_88 <= or ctrl_ch ctrl_open_ch
+    to _ctrl_8 <= or ctrl_cl ctrl_open_cl
     exp bus_ecx <= _out_BUS
 }
 
@@ -707,10 +891,10 @@ register
 {
     to _clk <= clk
     to _in_BUS <= bus
-    to _ctrl_32 <= ctrl_edx
-    to _ctrl_16 <= ctrl_dx
-    to _ctrl_88 <= ctrl_dh
-    to _ctrl_8 <= ctrl_dl
+    to _ctrl_32 <= or ctrl_edx ctrl_open_edx
+    to _ctrl_16 <= or ctrl_dx ctrl_open_dx
+    to _ctrl_88 <= or ctrl_dh ctrl_open_dh
+    to _ctrl_8 <= or ctrl_dl ctrl_open_dl
     exp bus_edx <= _out_BUS
 }
 
@@ -719,7 +903,7 @@ register
 {
     to _clk <= clk
     to _in_BUS <= bus
-    to _ctrl_32 <= ctrl_esp
+    to _ctrl_32 <= or ctrl_esp ctrl_open_esp
     exp bus_esp <= _out_BUS
 }
 
@@ -1463,8 +1647,42 @@ cond_12_9 <= and steps[12] inst[9]
 cond_13_9 <= and steps[13] inst[9]
 cond_14_9 <= and steps[14] inst[9]
 cond_15_9 <= and steps[15] inst[9]
+cond_2_2 <= and steps[2] inst[2]
+cond_3_2 <= and steps[3] inst[2]
+cond_4_2 <= and steps[4] inst[2]
+cond_5_2 <= and steps[5] inst[2]
+cond_6_2 <= and steps[6] inst[2]
+cond_2_6 <= and steps[2] inst[6]
+cond_3_6 <= and steps[3] inst[6]
+cond_4_6 <= and steps[4] inst[6]
+cond_5_6 <= and steps[5] inst[6]
+cond_6_6 <= and steps[6] inst[6]
+cond_2_10 <= and steps[2] inst[10]
+cond_3_10 <= and steps[3] inst[10]
+cond_4_10 <= and steps[4] inst[10]
+cond_5_10 <= and steps[5] inst[10]
+cond_6_10 <= and steps[6] inst[10]
+cond_2_3 <= and steps[2] inst[3]
+cond_3_3 <= and steps[3] inst[3]
+cond_4_3 <= and steps[4] inst[3]
+cond_5_3 <= and steps[5] inst[3]
+cond_6_3 <= and steps[6] inst[3]
+cond_7_3 <= and steps[7] inst[3]
+cond_2_7 <= and steps[2] inst[7]
+cond_3_7 <= and steps[3] inst[7]
+cond_4_7 <= and steps[4] inst[7]
+cond_5_7 <= and steps[5] inst[7]
+cond_6_7 <= and steps[6] inst[7]
+cond_7_7 <= and steps[7] inst[7]
+cond_2_11 <= and steps[2] inst[11]
+cond_3_11 <= and steps[3] inst[11]
+cond_4_11 <= and steps[4] inst[11]
+cond_5_11 <= and steps[5] inst[11]
+cond_6_11 <= and steps[6] inst[11]
+cond_7_11 <= and steps[7] inst[11]
 cond_2_12 <= and steps[2] inst[12]
 cond_3_12 <= and steps[3] inst[12]
+cond_2_13 <= and steps[2] inst[13]
 cond_4_12-0 <= and steps[4] inst[12] instt[0]
 cond_5_12-0 <= and steps[5] inst[12] instt[0]
 cond_4_12-1 <= and steps[4] inst[12] instt[1]
@@ -1531,51 +1749,69 @@ cond_15_1-159 <= and steps[15] inst[1] instt[159]
 cond_16_1-159 <= and steps[16] inst[1] instt[159]
 cond_15_1-160 <= and steps[15] inst[1] instt[160]
 cond_16_1-160 <= and steps[16] inst[1] instt[160]
-ctrl_eip[1] <= or steps[0] cond_2_0 cond_4_0 cond_2_4 cond_4_4 cond_2_8 cond_4_8 cond_2_1 cond_4_1 cond_7_1 cond_10_1 cond_13_1 cond_2_5 cond_4_5 cond_7_5 cond_10_5 cond_13_5 cond_2_9 cond_4_9 cond_7_9 cond_10_9 cond_13_9 cond_2_12
-ctrl_mi[0] <= or steps[0] cond_2_0 cond_4_0 cond_2_4 cond_4_4 cond_2_8 cond_4_8 cond_2_1 cond_4_1 cond_7_1 cond_10_1 cond_13_1 cond_14_1 cond_2_5 cond_4_5 cond_7_5 cond_10_5 cond_13_5 cond_14_5 cond_2_9 cond_4_9 cond_7_9 cond_10_9 cond_13_9 cond_14_9 cond_2_12
-ctrl_ram[1] <= or steps[1] cond_3_0 cond_5_0 cond_3_4 cond_5_4 cond_3_8 cond_5_8 cond_3_1 cond_5_1 cond_8_1 cond_11_1 cond_14_1 cond_15_1 cond_3_5 cond_5_5 cond_8_5 cond_11_5 cond_14_5 cond_15_5 cond_3_9 cond_5_9 cond_8_9 cond_11_9 cond_14_9 cond_15_9 cond_3_12
+cond_7_2-153 <= and steps[7] inst[2] instt[153]
+cond_8_2-153 <= and steps[8] inst[2] instt[153]
+cond_7_2-154 <= and steps[7] inst[2] instt[154]
+cond_8_2-154 <= and steps[8] inst[2] instt[154]
+cond_7_2-155 <= and steps[7] inst[2] instt[155]
+cond_8_2-155 <= and steps[8] inst[2] instt[155]
+cond_7_2-156 <= and steps[7] inst[2] instt[156]
+cond_8_2-156 <= and steps[8] inst[2] instt[156]
+cond_7_2-157 <= and steps[7] inst[2] instt[157]
+cond_8_2-157 <= and steps[8] inst[2] instt[157]
+cond_7_2-158 <= and steps[7] inst[2] instt[158]
+cond_8_2-158 <= and steps[8] inst[2] instt[158]
+cond_7_2-159 <= and steps[7] inst[2] instt[159]
+cond_8_2-159 <= and steps[8] inst[2] instt[159]
+cond_7_2-160 <= and steps[7] inst[2] instt[160]
+cond_8_2-160 <= and steps[8] inst[2] instt[160]
+cond_7_3-153 <= and steps[7] inst[3] instt[153]
+cond_8_3-153 <= and steps[8] inst[3] instt[153]
+cond_7_3-154 <= and steps[7] inst[3] instt[154]
+cond_8_3-154 <= and steps[8] inst[3] instt[154]
+cond_7_3-155 <= and steps[7] inst[3] instt[155]
+cond_8_3-155 <= and steps[8] inst[3] instt[155]
+cond_7_3-156 <= and steps[7] inst[3] instt[156]
+cond_8_3-156 <= and steps[8] inst[3] instt[156]
+cond_7_3-157 <= and steps[7] inst[3] instt[157]
+cond_8_3-157 <= and steps[8] inst[3] instt[157]
+cond_7_3-158 <= and steps[7] inst[3] instt[158]
+cond_8_3-158 <= and steps[8] inst[3] instt[158]
+cond_7_3-159 <= and steps[7] inst[3] instt[159]
+cond_8_3-159 <= and steps[8] inst[3] instt[159]
+cond_7_3-160 <= and steps[7] inst[3] instt[160]
+cond_8_3-160 <= and steps[8] inst[3] instt[160]
+ctrl_eip[1] <= or steps[0] cond_2_0 cond_4_0 cond_2_4 cond_4_4 cond_2_8 cond_4_8 cond_2_1 cond_4_1 cond_7_1 cond_10_1 cond_13_1 cond_2_5 cond_4_5 cond_7_5 cond_10_5 cond_13_5 cond_2_9 cond_4_9 cond_7_9 cond_10_9 cond_13_9 cond_2_2 cond_4_2 cond_2_6 cond_4_6 cond_2_10 cond_4_10 cond_2_3 cond_4_3 cond_2_7 cond_4_7 cond_2_11 cond_4_11 cond_2_12
+ctrl_mi[0] <= or steps[0] cond_2_0 cond_4_0 cond_2_4 cond_4_4 cond_2_8 cond_4_8 cond_2_1 cond_4_1 cond_7_1 cond_10_1 cond_13_1 cond_14_1 cond_2_5 cond_4_5 cond_7_5 cond_10_5 cond_13_5 cond_14_5 cond_2_9 cond_4_9 cond_7_9 cond_10_9 cond_13_9 cond_14_9 cond_2_2 cond_4_2 cond_2_6 cond_4_6 cond_2_10 cond_4_10 cond_2_3 cond_4_3 cond_6_3 cond_2_7 cond_4_7 cond_6_7 cond_2_11 cond_4_11 cond_6_11 cond_2_12
+ctrl_ram[1] <= or steps[1] cond_3_0 cond_5_0 cond_3_4 cond_5_4 cond_3_8 cond_5_8 cond_3_1 cond_5_1 cond_8_1 cond_11_1 cond_14_1 cond_15_1 cond_3_5 cond_5_5 cond_8_5 cond_11_5 cond_14_5 cond_15_5 cond_3_9 cond_5_9 cond_8_9 cond_11_9 cond_14_9 cond_15_9 cond_3_2 cond_5_2 cond_3_6 cond_5_6 cond_3_10 cond_5_10 cond_3_3 cond_5_3 cond_7_3 cond_3_7 cond_5_7 cond_7_7 cond_3_11 cond_5_11 cond_7_11 cond_3_12
 ctrl_ir[0] <= or steps[1]
-ctrl_eip[2] <= or steps[1] cond_3_0 cond_5_0 cond_3_4 cond_5_4 cond_3_8 cond_5_8 cond_3_1 cond_5_1 cond_8_1 cond_11_1 cond_14_1 cond_3_5 cond_5_5 cond_8_5 cond_11_5 cond_14_5 cond_3_9 cond_5_9 cond_8_9 cond_11_9 cond_14_9 cond_3_12
-ctrl_irr[0] <= or cond_3_0 cond_3_4 cond_3_8 cond_3_1 cond_3_5 cond_3_9 cond_3_12
+ctrl_eip[2] <= or steps[1] cond_3_0 cond_5_0 cond_3_4 cond_5_4 cond_3_8 cond_5_8 cond_3_1 cond_5_1 cond_8_1 cond_11_1 cond_14_1 cond_3_5 cond_5_5 cond_8_5 cond_11_5 cond_14_5 cond_3_9 cond_5_9 cond_8_9 cond_11_9 cond_14_9 cond_3_2 cond_5_2 cond_3_6 cond_5_6 cond_3_10 cond_5_10 cond_3_3 cond_5_3 cond_3_7 cond_5_7 cond_3_11 cond_5_11 cond_3_12
+ctrl_irr[0] <= or cond_3_0 cond_3_4 cond_3_8 cond_3_1 cond_3_5 cond_3_9 cond_3_2 cond_3_6 cond_3_10 cond_3_3 cond_3_7 cond_3_11 cond_3_12
 ctrl_alu_tmp[0] <= or cond_5_1 cond_8_1 cond_11_1 cond_5_5 cond_8_5 cond_11_5 cond_5_9 cond_8_9 cond_11_9
 ctrl_alu[7] <= or cond_6_1 cond_9_1 cond_12_1 cond_6_5 cond_9_5 cond_12_5 cond_6_9 cond_9_9 cond_12_9
 ctrl_alu_arch[2] <= or cond_6_1 cond_9_1 cond_12_1 cond_6_5 cond_9_5 cond_12_5 cond_6_9 cond_9_9 cond_12_9
 ctrl_alu_out[0] <= or cond_6_1 cond_9_1 cond_12_1 cond_6_5 cond_9_5 cond_12_5 cond_6_9 cond_9_9 cond_12_9
 ctrl_8[0] <= or cond_6_1 cond_9_1 cond_12_1 cond_6_5 cond_9_5 cond_12_5 cond_6_9 cond_9_9 cond_12_9
 ctrl_alu_out[1] <= or cond_8_1 cond_11_1 cond_14_1 cond_8_5 cond_11_5 cond_14_5 cond_8_9 cond_11_9 cond_14_9
-ctrl_al[0] <= or cond_4_12-0 cond_5_0-153 cond_15_1-153
-ctrl_al[1] <= or cond_5_12-0
-sc_rst[0] <= or cond_5_12-0 cond_5_12-1 cond_5_12-2 cond_5_12-3 cond_5_12-4 cond_5_12-5 cond_5_12-6 cond_5_12-7 cond_5_12-8 cond_5_12-9 cond_5_12-10 cond_5_12-11 cond_5_12-12 cond_5_12-13 cond_5_12-14 cond_5_12-15 cond_5_12-16 cond_6_0-153 cond_6_0-154 cond_6_0-155 cond_6_0-156 cond_6_0-157 cond_6_0-158 cond_6_0-159 cond_6_0-160 cond_16_1-153 cond_16_1-154 cond_16_1-155 cond_16_1-156 cond_16_1-157 cond_16_1-158 cond_16_1-159 cond_16_1-160
-ctrl_ah[0] <= or cond_4_12-1 cond_5_0-154 cond_15_1-154
-ctrl_ah[1] <= or cond_5_12-1
-ctrl_bl[0] <= or cond_4_12-2 cond_5_0-155 cond_15_1-155
-ctrl_bl[1] <= or cond_5_12-2
-ctrl_bh[0] <= or cond_4_12-3 cond_5_0-156 cond_15_1-156
-ctrl_bh[1] <= or cond_5_12-3
-ctrl_cl[0] <= or cond_4_12-4 cond_5_0-157 cond_15_1-157
-ctrl_cl[1] <= or cond_5_12-4
-ctrl_ch[0] <= or cond_4_12-5 cond_5_0-158 cond_15_1-158
-ctrl_ch[1] <= or cond_5_12-5
-ctrl_dl[0] <= or cond_4_12-6 cond_5_0-159 cond_15_1-159
-ctrl_dl[1] <= or cond_5_12-6
-ctrl_dh[0] <= or cond_4_12-7 cond_5_0-160 cond_15_1-160
-ctrl_dh[1] <= or cond_5_12-7
+ctrl_rs[0] <= or cond_5_2 cond_5_6 cond_5_10 cond_5_3 cond_5_7 cond_5_11
+ctrl_open[1] <= or cond_6_2 cond_6_6 cond_6_10 cond_6_3 cond_6_7 cond_6_11
+ctrl_eip[3] <= or cond_2_13
+sc_rst[0] <= or cond_2_13 cond_5_12-0 cond_5_12-1 cond_5_12-2 cond_5_12-3 cond_5_12-4 cond_5_12-5 cond_5_12-6 cond_5_12-7 cond_5_12-8 cond_5_12-9 cond_5_12-10 cond_5_12-11 cond_5_12-12 cond_5_12-13 cond_5_12-14 cond_5_12-15 cond_5_12-16 cond_6_0-153 cond_6_0-154 cond_6_0-155 cond_6_0-156 cond_6_0-157 cond_6_0-158 cond_6_0-159 cond_6_0-160 cond_16_1-153 cond_16_1-154 cond_16_1-155 cond_16_1-156 cond_16_1-157 cond_16_1-158 cond_16_1-159 cond_16_1-160 cond_8_2-153 cond_8_2-154 cond_8_2-155 cond_8_2-156 cond_8_2-157 cond_8_2-158 cond_8_2-159 cond_8_2-160 cond_8_3-153 cond_8_3-154 cond_8_3-155 cond_8_3-156 cond_8_3-157 cond_8_3-158 cond_8_3-159 cond_8_3-160
+ctrl_al[0] <= or cond_4_12-0 cond_5_0-153 cond_15_1-153 cond_7_2-153 cond_7_3-153
+ctrl_ah[0] <= or cond_4_12-1 cond_5_0-154 cond_15_1-154 cond_7_2-154 cond_7_3-154
+ctrl_bl[0] <= or cond_4_12-2 cond_5_0-155 cond_15_1-155 cond_7_2-155 cond_7_3-155
+ctrl_bh[0] <= or cond_4_12-3 cond_5_0-156 cond_15_1-156 cond_7_2-156 cond_7_3-156
+ctrl_cl[0] <= or cond_4_12-4 cond_5_0-157 cond_15_1-157 cond_7_2-157 cond_7_3-157
+ctrl_ch[0] <= or cond_4_12-5 cond_5_0-158 cond_15_1-158 cond_7_2-158 cond_7_3-158
+ctrl_dl[0] <= or cond_4_12-6 cond_5_0-159 cond_15_1-159 cond_7_2-159 cond_7_3-159
+ctrl_dh[0] <= or cond_4_12-7 cond_5_0-160 cond_15_1-160 cond_7_2-160 cond_7_3-160
 ctrl_ax[0] <= or cond_4_12-8
-ctrl_ax[1] <= or cond_5_12-8
 ctrl_bx[0] <= or cond_4_12-9
-ctrl_bx[1] <= or cond_5_12-9
 ctrl_cx[0] <= or cond_4_12-10
-ctrl_cx[1] <= or cond_5_12-10
 ctrl_dx[0] <= or cond_4_12-11
-ctrl_dx[1] <= or cond_5_12-11
 ctrl_eax[0] <= or cond_4_12-12
-ctrl_eax[1] <= or cond_5_12-12
 ctrl_ebx[0] <= or cond_4_12-13
-ctrl_ebx[1] <= or cond_5_12-13
 ctrl_ecx[0] <= or cond_4_12-14
-ctrl_ecx[1] <= or cond_5_12-14
 ctrl_edx[0] <= or cond_4_12-15
-ctrl_edx[1] <= or cond_5_12-15
 ctrl_esp[0] <= or cond_4_12-16
-ctrl_esp[1] <= or cond_5_12-16
 ctrl_eip[0] <= or rst

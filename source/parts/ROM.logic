@@ -13,6 +13,26 @@ sel_2_vec[32]
 sel_2[1]
 val_2[8]
 
+sel_3_vec[32]
+sel_3[1]
+val_3[8]
+
+sel_4_vec[32]
+sel_4[1]
+val_4[8]
+
+sel_5_vec[32]
+sel_5[1]
+val_5[8]
+
+sel_6_vec[32]
+sel_6[1]
+val_6[8]
+
+sel_7_vec[32]
+sel_7[1]
+val_7[8]
+
 out out_BUS[32]
 bus[8]
 in address[32]
@@ -30,8 +50,28 @@ sel_1_vec <= xor 1 address
 
 sel_2_vec <= xor 2 address
 @sel_2 <= nor sel_2_vec
-@val_2 <= and sel_2 5
+@val_2 <= and sel_2 7
+
+sel_3_vec <= xor 3 address
+@sel_3 <= nor sel_3_vec
+@val_3 <= and sel_3 3
+
+sel_4_vec <= xor 4 address
+@sel_4 <= nor sel_4_vec
+@val_4 <= and sel_4 153
+
+sel_5_vec <= xor 5 address
+@sel_5 <= nor sel_5_vec
+@val_5 <= and sel_5 0
+
+sel_6_vec <= xor 6 address
+@sel_6 <= nor sel_6_vec
+@val_6 <= and sel_6 13
+
+sel_7_vec <= xor 7 address
+@sel_7 <= nor sel_7_vec
+@val_7 <= and sel_7 15
 
 @out_BUS[:8] <= and RE bus
-bus <= or val_0 val_1 val_2
+bus <= or val_0 val_1 val_2 val_3 val_4 val_5 val_6 val_7
 

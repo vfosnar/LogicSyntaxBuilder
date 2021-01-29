@@ -111,6 +111,54 @@ ctrl_alu_arch[3]
 
 ctrl_alu_out[4]
 
+ctrl_rs[4]
+rs_out_cond[8]
+rs_out[8]
+
+open_al[8]
+open_ah[8]
+open_bl[8]
+open_bh[8]
+open_cl[8]
+open_ch[8]
+open_dl[8]
+open_dh[8]
+
+open_ax[8]
+open_bx[8]
+open_cx[8]
+open_dx[8]
+
+open_eax[8]
+open_ebx[8]
+open_esp[8]
+open_ecx[8]
+open_edx[8]
+
+reg_open[17]
+
+ctrl_open[4]
+
+ctrl_open_al[4]
+ctrl_open_ah[4]
+ctrl_open_bl[4]
+ctrl_open_bh[4]
+ctrl_open_cl[4]
+ctrl_open_ch[4]
+ctrl_open_dl[4]
+ctrl_open_dh[4]
+
+ctrl_open_ax[4]
+ctrl_open_bx[4]
+ctrl_open_cx[4]
+ctrl_open_dx[4]
+
+ctrl_open_eax[4]
+ctrl_open_ebx[4]
+ctrl_open_esp[4]
+ctrl_open_ecx[4]
+ctrl_open_edx[4]
+
 ctrl_eax[4]
 ctrl_ebx[4]
 ctrl_ecx[4]
@@ -544,15 +592,85 @@ ROM
     exp bus_rom <= _out_BUS
 }
 
+; RS
+register
+{
+    to _clk <= clk
+    to _in_BUS <= bus
+    to _ctrl_8 <= ctrl_rs
+    exp rs_out <= _out_dff[:8]
+}
+
+open_al <= xor rs_out 0
+open_ah <= xor rs_out 1
+open_bl <= xor rs_out 2
+open_bh <= xor rs_out 3
+open_cl <= xor rs_out 4
+open_ch <= xor rs_out 5
+open_dl <= xor rs_out 6
+open_dh <= xor rs_out 7
+
+open_ax <= xor rs_out 8
+open_bx <= xor rs_out 9
+open_cx <= xor rs_out 10
+open_dx <= xor rs_out 11
+
+open_eax <= xor rs_out 12
+open_ebx <= xor rs_out 13
+open_ecx <= xor rs_out 14
+open_edx <= xor rs_out 15
+open_esp <= xor rs_out 16
+@*
+reg_open[0] <= nor open_al
+reg_open[1] <= nor open_ah
+reg_open[2] <= nor open_bl
+reg_open[3] <= nor open_bh
+reg_open[4] <= nor open_cl
+reg_open[5] <= nor open_ch
+reg_open[6] <= nor open_dl
+reg_open[7] <= nor open_dh
+
+reg_open[8] <= nor open_ax
+reg_open[9] <= nor open_bx
+reg_open[10] <= nor open_cx
+reg_open[11] <= nor open_dx
+
+reg_open[12] <= nor open_eax
+reg_open[13] <= nor open_ebx
+reg_open[14] <= nor open_ecx
+reg_open[15] <= nor open_edx
+reg_open[16] <= nor open_esp
+
+ctrl_open_al <= and ctrl_open reg_open[0]
+ctrl_open_ah <= and ctrl_open reg_open[1]
+ctrl_open_bl <= and ctrl_open reg_open[2]
+ctrl_open_bh <= and ctrl_open reg_open[3]
+ctrl_open_cl <= and ctrl_open reg_open[4]
+ctrl_open_ch <= and ctrl_open reg_open[5]
+ctrl_open_dl <= and ctrl_open reg_open[6]
+ctrl_open_dh <= and ctrl_open reg_open[7]
+
+ctrl_open_ax <= and ctrl_open reg_open[8]
+ctrl_open_bx <= and ctrl_open reg_open[9]
+ctrl_open_cx <= and ctrl_open reg_open[10]
+ctrl_open_dx <= and ctrl_open reg_open[11]
+
+ctrl_open_eax <= and ctrl_open reg_open[12]
+ctrl_open_ebx <= and ctrl_open reg_open[13]
+ctrl_open_ecx <= and ctrl_open reg_open[14]
+ctrl_open_edx <= and ctrl_open reg_open[15]
+ctrl_open_esp <= and ctrl_open reg_open[16]
+*@
+
 ; EAX
 register
 {
     to _clk <= clk
     to _in_BUS <= bus
-    to _ctrl_32 <= ctrl_eax
-    to _ctrl_16 <= ctrl_ax
-    to _ctrl_88 <= ctrl_ah
-    to _ctrl_8 <= ctrl_al
+    to _ctrl_32 <= or ctrl_eax ctrl_open_eax
+    to _ctrl_88 <= or ctrl_ah ctrl_open_ah
+    to _ctrl_16 <= or ctrl_ax ctrl_open_ax
+    to _ctrl_8 <= or ctrl_al ctrl_open_al
     exp bus_eax <= _out_BUS
 }
 
@@ -561,10 +679,10 @@ register
 {
     to _clk <= clk
     to _in_BUS <= bus
-    to _ctrl_32 <= ctrl_ebx
-    to _ctrl_16 <= ctrl_bx
-    to _ctrl_88 <= ctrl_bh
-    to _ctrl_8 <= ctrl_bl
+    to _ctrl_32 <= or ctrl_ebx ctrl_open_ebx
+    to _ctrl_16 <= or ctrl_bx ctrl_open_bx
+    to _ctrl_88 <= or ctrl_bh ctrl_open_bh
+    to _ctrl_8 <= or ctrl_bl ctrl_open_bl
     exp bus_ebx <= _out_BUS
 }
 
@@ -573,10 +691,10 @@ register
 {
     to _clk <= clk
     to _in_BUS <= bus
-    to _ctrl_32 <= ctrl_ecx
-    to _ctrl_16 <= ctrl_cx
-    to _ctrl_88 <= ctrl_ch
-    to _ctrl_8 <= ctrl_cl
+    to _ctrl_32 <= or ctrl_ecx ctrl_open_ecx
+    to _ctrl_16 <= or ctrl_cx ctrl_open_cx
+    to _ctrl_88 <= or ctrl_ch ctrl_open_ch
+    to _ctrl_8 <= or ctrl_cl ctrl_open_cl
     exp bus_ecx <= _out_BUS
 }
 
@@ -585,10 +703,10 @@ register
 {
     to _clk <= clk
     to _in_BUS <= bus
-    to _ctrl_32 <= ctrl_edx
-    to _ctrl_16 <= ctrl_dx
-    to _ctrl_88 <= ctrl_dh
-    to _ctrl_8 <= ctrl_dl
+    to _ctrl_32 <= or ctrl_edx ctrl_open_edx
+    to _ctrl_16 <= or ctrl_dx ctrl_open_dx
+    to _ctrl_88 <= or ctrl_dh ctrl_open_dh
+    to _ctrl_8 <= or ctrl_dl ctrl_open_dl
     exp bus_edx <= _out_BUS
 }
 
@@ -597,7 +715,7 @@ register
 {
     to _clk <= clk
     to _in_BUS <= bus
-    to _ctrl_32 <= ctrl_esp
+    to _ctrl_32 <= or ctrl_esp ctrl_open_esp
     exp bus_esp <= _out_BUS
 }
 

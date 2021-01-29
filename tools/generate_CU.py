@@ -124,16 +124,63 @@ for id_ in [0x01, 0x05, 0x09]:
     print("{}: {}".format(hex(id_), off))
 
 # PRELOAD BYTE FROM REGISTER
+for id_ in [0x02, 0x06, 0x0A]:
+    off = 2
+    inputs.append(["ctrl_eip",      1, off, [id_]]) # EIP -> MI
+    inputs.append(["ctrl_mi",       0, off, [id_]])
+    off += 1 # 3
+    inputs.append(["ctrl_ram",      1, off, [id_]]) # RAM -> IRR
+    inputs.append(["ctrl_irr",      0, off, [id_]])
+    inputs.append(["ctrl_eip",      2, off, [id_]]) # EIP++
+    ##### LOAD PARAMETER #####
+    off += 1 # 4
+    inputs.append(["ctrl_eip",      1, off, [id_]]) # EIP -> MI
+    inputs.append(["ctrl_mi",       0, off, [id_]])
+    off += 1 # 5
+    inputs.append(["ctrl_ram",      1, off, [id_]]) # RAM -> RS
+    inputs.append(["ctrl_rs",       0, off, [id_]])
+    inputs.append(["ctrl_eip",      2, off, [id_]]) # EIP++
+    off += 1 # 6
+    inputs.append(["ctrl_open",     1, off, [id_]]) # REG -> BUS
+    print("{}: {}".format(hex(id_), off))
 
+# PRELOAD BYTE FROM ADDRESS IN REGISTER
+for id_ in [0x03, 0x07, 0x0B]:
+    off = 2
+    inputs.append(["ctrl_eip",      1, off, [id_]]) # EIP -> MI
+    inputs.append(["ctrl_mi",       0, off, [id_]])
+    off += 1 # 3
+    inputs.append(["ctrl_ram",      1, off, [id_]]) # RAM -> IRR
+    inputs.append(["ctrl_irr",      0, off, [id_]])
+    inputs.append(["ctrl_eip",      2, off, [id_]]) # EIP++
+    ##### LOAD PARAMETER #####
+    off += 1 # 4
+    inputs.append(["ctrl_eip",      1, off, [id_]]) # EIP -> MI
+    inputs.append(["ctrl_mi",       0, off, [id_]])
+    off += 1 # 5
+    inputs.append(["ctrl_ram",      1, off, [id_]]) # RAM -> RS
+    inputs.append(["ctrl_rs",       0, off, [id_]])
+    inputs.append(["ctrl_eip",      2, off, [id_]]) # EIP++
+    off += 1 # 6
+    inputs.append(["ctrl_open",     1, off, [id_]]) # REG -> MI
+    inputs.append(["ctrl_mi",       0, off, [id_]])
+    off += 1 # 7
+    inputs.append(["ctrl_ram",      1, off, [id_]]) # RAM -> BUS
+    print("{}: {}".format(hex(id_), off))
 
 # NO PRELOADING
 off = 2
-inputs.append(["ctrl_eip", 1, 2, [0x0C]]) # EIP -> MI
-inputs.append(["ctrl_mi",  0, 2, [0x0C]])
-off += 1
-inputs.append(["ctrl_ram", 1, 3, [0x0C]]) # RAM -> IRR
-inputs.append(["ctrl_irr", 0, 3, [0x0C]])
-inputs.append(["ctrl_eip", 2, 3, [0x0C]]) # EIP++
+inputs.append(["ctrl_eip", 1, off, [0x0C]]) # EIP -> MI
+inputs.append(["ctrl_mi",  0, off, [0x0C]])
+off += 1 # 3
+inputs.append(["ctrl_ram", 1, off, [0x0C]]) # RAM -> IRR
+inputs.append(["ctrl_irr", 0, off, [0x0C]])
+inputs.append(["ctrl_eip", 2, off, [0x0C]]) # EIP++
+
+# HALT
+off = 2
+inputs.append(["ctrl_eip", 3, off, [0x0D]]) # EIP--
+inputs.append(["sc_rst"  , 0, off, [0x0D]])
 
 # INSTRUCTION
 ## with data preload
@@ -167,8 +214,8 @@ for reg in regs8 + regs16 + regs32:
     off = 4
     inputs.append(["ctrl_{}".format(reg), 0, off, [0x0C, id_]])
     off += 1
-    inputs.append(["ctrl_{}".format(reg), 1, off, [0x0C, id_]])
     inputs.append(["sc_rst"             , 0, off, [0x0C, id_]])
+
     id_ += 1
 
 id_ = 0x99
@@ -177,6 +224,7 @@ for reg in regs8: # BYTE MOV $
     inputs.append(["ctrl_{}".format(reg), 0, off, [0x00, id_]])
     off += 1
     inputs.append(["sc_rst"             , 0, off, [0x00, id_]])
+
     id_ += 1
 
 id_ = 0x99
@@ -185,8 +233,26 @@ for reg in regs8: # BYTE MOV [$]
     inputs.append(["ctrl_{}".format(reg), 0, off, [0x01, id_]])
     off += 1
     inputs.append(["sc_rst"             , 0, off, [0x01, id_]])
+
     id_ += 1
 
+id_ = 0x99
+for reg in regs8: # BYTE MOV REG
+    off = 7
+    inputs.append(["ctrl_{}".format(reg), 0, off, [0x02, id_]])
+    off += 1
+    inputs.append(["sc_rst"             , 0, off, [0x02, id_]])
+
+    id_ += 1
+
+id_ = 0x99
+for reg in regs8: # BYTE MOV [REG]
+    off = 7
+    inputs.append(["ctrl_{}".format(reg), 0, off, [0x03, id_]])
+    off += 1
+    inputs.append(["sc_rst"             , 0, off, [0x03, id_]])
+
+    id_ += 1
 
 ##### WRITE TO CU #####
 
