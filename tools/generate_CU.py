@@ -1,6 +1,21 @@
-control = {}
+
+## EXECUTION
+#
+# CATCH PRELOAD BYTE FROM MEMORY ->                 ##### CATCH PRELOAD #####
+# CATCH INSTRUCTION AND PRELOAD DATA FROM MEMORY -> ##### EXECUTE PRELOAD #####
+# EXECUTE INSTRUCTION ->                            ##### EXECUTE INSTRUCTION #####
+#
+## instruction example:
+#
+# mov byte bl, [0x00000006]
+#
+# MEANING                       IN MEMORY       DEFINITION      UNDERSTAND BY PROCESSOR
+# byte at mem. address          0x01            preload byte    defines byte preloading
+# mov to reg. bl (0x99+0x02)    0x9B            instruction     is loaded into irr, executes after preloading
+# address                       0x00000006      data            byte is preloaded from address onto bus
 
 
+# definitions
 #       0x00  0x01  0x02  0x03  0x04  0x05  0x06  0x07
 regs8 = ["al", "ah", "bl", "bh", "cl", "ch", "dl", "dh"]
 #        0x08  0x09  0x0A  0x0B
@@ -11,8 +26,13 @@ regs32 = ["eax", "ebx", "ecx", "edx", "esp"]
 regId = {i:reg for i, reg in enumerate(regs8 + regs16 + regs32)}
 
 
-# [ctrl, ctrl_index, step, [inst, instt], flag]
+##### CATCH PRELOAD #####
 
+# SYNTAX                                                                MOSTLY USED WHEN
+# [control signal, control index, step]                                 catching preload
+# [control signal, control index, step, [ir value]]                     preloading
+# [control signal, control index, step, [ir value, irr value]]          executing instruction
+# [control signal, control index, step, [ir value, irr value], flag]    condition in instruction
 inputs = [
     ["ctrl_eip", 1, 0], # EIP -> MI
     ["ctrl_mi",  0, 0],
@@ -22,8 +42,21 @@ inputs = [
     ["ctrl_eip", 2, 1], # EIP++
 ]
 
-# PRELOAD BYTE
+##### EXECUTE PRELOAD #####
 
+# PRELOAD DATA
+#
+# all imm/m/r/[r]
+# imm   m    r   [r]
+#  00   01   02   03  byte
+#  04   05   06   07  word
+#  08   09   0A   0B  long
+#
+# DO NOT PRELOAD DATA, ONLY INSTRUCTION
+#
+# 0C
+
+# PRELOAD BYTE
 for id_ in [0x00, 0x04, 0x08]:
     off = 2
     inputs.append(["ctrl_eip", 1, off, [id_]]) # EIP -> MI
@@ -42,7 +75,6 @@ for id_ in [0x00, 0x04, 0x08]:
     print("{}: {}".format(hex(id_), off))
 
 # PRELOAD BYTE FROM ADDRESS
-
 for id_ in [0x01, 0x05, 0x09]:
     off = 2
     inputs.append(["ctrl_eip",      1, off, [id_]]) # EIP -> MI
@@ -104,15 +136,8 @@ inputs.append(["ctrl_irr", 0, 3, [0x0C]])
 inputs.append(["ctrl_eip", 2, 3, [0x0C]]) # EIP++
 
 # INSTRUCTION
-## with value preload
+## with data preload
 #
-# all imm/m/r/[r]
-# imm   m    r   [r]
-#  00   01   02   03  byte
-#  04   05   06   07  word
-#  08   09   0A   0B  long
-#
-# instructions
 # 00 ADD
 # 11 SUB
 # 22 OR
@@ -128,20 +153,14 @@ inputs.append(["ctrl_eip", 2, 3, [0x0C]]) # EIP++
 # CC POP
 # DD PUSH
 #
-## without value preload
+## without data preload
 #
-# 0C
-#
-# instructions
 # 00 RST
 # 11 INC
 # 22 DEC
 # 33 NOT
 
-# PRELOAD INDICATOR -> ir
-# INSTRUCTION -> irr
-# execute preload
-# execute instruction
+##### EXECUTE INSTRUCTION #####
 
 id_ = 0
 for reg in regs8 + regs16 + regs32:
@@ -167,6 +186,9 @@ for reg in regs8: # BYTE MOV [$]
     off += 1
     inputs.append(["sc_rst"             , 0, off, [0x01, id_]])
     id_ += 1
+
+
+##### WRITE TO CU #####
 
 output_and = {}
 output_or = {}
