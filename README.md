@@ -1,5 +1,5 @@
 # LogicSyntaxBuilder
- This is repository for my project of building a computer, simulated using a game called Scrap Mechanic
+ This is repository for my project about building a computer, simulated using a game called Scrap Mechanic
 ## Progress
  This computer is still in progress of building and it doesn't even work if you are reading this text. Gonna write update notes here later.
 ## How-to build
