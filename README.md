@@ -11,7 +11,7 @@
     bash build_sm.sh /path/to/Scrap/Mechanic/Blueprints/some_uuid4/
 
     # or you can simulate it without Scrap Mechanic
-    # using cpp and g++ compiler (prebuild for Linux-x86_64)
+    # using cpp and g++ compiler (prebuild for Linux-x86_64) RECOMMENDED
     bash build_sim_cpp.sh
     
     # using python3
