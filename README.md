@@ -1,7 +1,7 @@
 # LogicSyntaxBuilder
  This is repository for my project about building a computer, simulated using a game called Scrap Mechanic
 ## Progress
- This computer is still in progress of building and it doesn't even work if you are reading this text. Gonna write update notes here later.
+ This computer is still in progress of building and it doesn't even work if you are reading this text. Gonna write update notes here later. Some dumb dumb wrote this shit and it is very slow. Very bad person.
 ## How-to build
     git clone https://github.com/vfosnar/LogicSyntaxBuilder.git
     cd LogicSyntaxBuilder
